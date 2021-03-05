@@ -1,0 +1,84 @@
+<div id="layoutSidenav_nav">
+    <nav class="sb-sidenav accordion sb-sidenav-dark" id="sidenavAccordion">
+        <div class="sb-sidenav-menu">
+            <div class="nav">
+                <div class="sb-sidenav-menu-heading">Core</div>
+                <a class="nav-link" href="{{url('/')}}">
+                    <div class="sb-nav-link-icon"><i class="fas fa-tachometer-alt"></i></div>
+                    Dashboard
+                </a>
+
+
+
+
+
+                <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseAllocation" aria-expanded="false" aria-controls="collapseAllocation">
+                    <div class="sb-nav-link-icon"><i class="fas fa-columns"></i></div>
+                    Allocation
+                    <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
+                </a>
+
+                <div class="{{ \Request::is('sequence') || \Request::is('sequence/generate') ? 'navbar-expanded' : 'collapse' }}" id="collapseAllocation" aria-labelledby="headingOne" data-parent="#sidenavAccordion">
+                    <nav class="sb-sidenav-menu-nested nav">
+                        <a class="nav-link" href="{{url('sequence')}}">Sequence</a>
+                        <a class="nav-link" href="{{url('sequence/generate')}}">Generate Sequence</a>
+                    </nav>
+                </div>
+
+
+
+                <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseSms" aria-expanded="false" aria-controls="collapseSms">
+                    <div class="sb-nav-link-icon"><i class="fas fa-columns"></i></div>
+                    SMS
+                    <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
+                </a>
+
+                <div class="{{ \Request::is('randomization') || \Request::is('sms') ? 'navbar-expanded' : 'collapse' }}" id="collapseSms" aria-labelledby="headingOne" data-parent="#sidenavAccordion">
+                    <nav class="sb-sidenav-menu-nested nav">
+                        <a class="nav-link" href="{{url('randomization')}}">Randomization Log</a>
+                        <a class="nav-link" href="{{url('sms')}}">SMS Log</a>
+                    </nav>
+                </div>
+
+
+                <div class="sb-sidenav-menu-heading">Sites</div>
+                <a class="nav-link" href="{{url('sites')}}">
+                    <div class="sb-nav-link-icon"><i class="fas fa-chart-area"></i></div>
+                    Sites
+                </a>
+                <a class="nav-link" href="{{url('studies')}}">
+                    <div class="sb-nav-link-icon"><i class="fas fa-table"></i></div>
+                    Studies
+                </a>
+                <a class="nav-link" href="{{url('site_studies')}}">
+                    <div class="sb-nav-link-icon"><i class="fas fa-table"></i></div>
+                    Site Studies
+                </a>
+
+
+
+
+                <div class="sb-sidenav-menu-heading">Users</div>
+                <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseUsers" aria-expanded="false" aria-controls="collapseUsers">
+                    <div class="sb-nav-link-icon"><i class="fas fa-columns"></i></div>
+                    User Management
+                    <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
+                </a>
+
+                <div class="{{ \Request::is('user*') ? 'navbar-expanded' : 'collapse' }}" id="collapseUsers" aria-labelledby="headingOne" data-parent="#sidenavAccordion">
+                    <nav class="sb-sidenav-menu-nested nav">
+                        <a class="nav-link" href="{{url('users')}}">Users</a>
+                        <a class="nav-link" href="{{url('user_groups')}}">User Roles</a>
+                    </nav>
+                </div>
+
+
+
+            </div>
+        </div>
+        <div class="sb-sidenav-footer">
+            <div class="small">Logged in as:</div>
+            {{auth()->user()->first_name.' '.auth()->user()->last_name}}
+        </div>
+    </nav>
+</div>
