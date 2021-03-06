@@ -18,10 +18,11 @@
                     <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
                 </a>
 
-                <div class="{{ \Request::is('sequence') || \Request::is('sequence/generate') ? 'navbar-expanded' : 'collapse' }}" id="collapseAllocation" aria-labelledby="headingOne" data-parent="#sidenavAccordion">
+                <div class="{{ \Request::is('strata') || \Request::is('allocation/upload') ? 'navbar-expanded' : 'collapse' }}" id="collapseAllocation" aria-labelledby="headingOne" data-parent="#sidenavAccordion">
                     <nav class="sb-sidenav-menu-nested nav">
-                        <a class="nav-link" href="{{url('sequence')}}">Sequence</a>
-                        <a class="nav-link" href="{{url('sequence/generate')}}">Generate Sequence</a>
+                        <a class="nav-link" href="{{url('strata')}}">Strata</a>
+                        <a class="nav-link" href="{{url('allocation/upload')}}">Upload List</a>
+                        <a class="nav-link" href="#">Generate Sequence</a>
                     </nav>
                 </div>
 

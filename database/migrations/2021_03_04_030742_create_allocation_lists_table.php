@@ -23,7 +23,9 @@ class CreateAllocationListsTable extends Migration
             $table->unsignedBigInteger('site_id');
             $table->foreign('site_id')->references('id')->on('sites');
 
-            $table->string('stratum')->nullable();
+            $table->unsignedBigInteger('stratum_id');
+            $table->foreign('stratum_id')->references('id')->on('strata');
+
             $table->string('allocation');
             $table->string('participant_id')->nullable();
             $table->integer('user_id')->nullable();

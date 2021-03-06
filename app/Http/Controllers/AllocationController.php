@@ -1,0 +1,218 @@
+<?php
+
+namespace App\Http\Controllers;
+
+use App\AllocationList;
+use App\Site;
+use App\Stratum;
+use App\Study;
+use Carbon\Carbon;
+use Illuminate\Database\QueryException;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Session;
+use Yajra\DataTables\Facades\DataTables;
+
+class AllocationController extends Controller
+{
+    public function __construct()
+    {
+        $this->middleware('auth');
+    }
+
+    public function strata() {
+        $strata = Stratum::all();
+
+        return view('allocations.strata')->with([
+            'strata' => $strata,
+
+        ]);
+    }
+    public function strataDT() {
+        $strata = Stratum::all();
+
+        return DataTables::of($strata)
+
+            ->editColumn('created_at', function($strata) {
+                return Carbon::parse($strata->created_at)->isoFormat('MMMM Do YYYY');
+            })
+
+            ->addColumn('actions', function($strata) {
+                $actions = '<div class="pull-right">';
+                $actions = '<div class="pull-right">
+                        <button source="' . route('edit-strata' ,  $strata->id) . '"
+                    class="btn btn-warning btn-sm edit-stratum-btn" acs-id="'.$strata->id .'">
+                    <i class="fa fa-edit">edit</i> Edit</button>';
+                $actions .= '<form action="'. route('delete-strata',  $strata->id) .'" style="display: inline; margin-left:10px" method="post" class="del_stratum_form">';
+                $actions .= method_field('DELETE');
+                $actions .= csrf_field() .'<button class="btn btn-danger btn-sm"><i class="fa fa-delete">edit</i>  Delete</button></form>';
+                $actions .= '</div>';
+                return $actions;
+            })
+            ->rawColumns(['actions'])
+            ->make(true);
+
+    }
+    public function edit_strata($id)
+    {
+        $stratum = Stratum::find($id);
+        return $stratum;
+    }
+    public function update_strata(Request $request)
+    {
+
+        $data = request()->validate([
+            'stratum' => 'required|max:255|unique:strata,stratum,'.$request->id,
+            'id' => 'required',
+        ]);
+
+
+
+        $stratum = Stratum::find($request->id);
+        $stratum->stratum = $request->stratum;
+        $stratum->update();
+
+        request()->session()->flash('success', 'Stratum has been updated.');
+        return redirect()->back();
+    }
+    public function delete_strata($id)
+    {
+        try {
+            Stratum::destroy($id);
+
+            request()->session()->flash('success', 'Stratum has been deleted.');
+        } catch (QueryException $qe) {
+            request()->session()->flash('warning', 'Could not delete stratum because it\'s being used in the system!');
+        }
+
+        return redirect()->back();
+    }
+    public  function create_strata(Request  $request){
+        $data = request()->validate([
+            'stratum' => 'required',
+        ]);
+
+        $exists = Stratum::where('stratum', $request->stratum)->first();
+
+        if (is_null($exists)){
+            $stratum = new Stratum();
+            $stratum->stratum = $request->stratum;
+            $stratum->saveOrFail();
+            request()->session()->flash('success', 'Stratum has been created successfully');
+
+        }else{
+            request()->session()->flash('warning', 'A stratum with a similar name already exists');
+        }
+
+        return redirect()->back();
+    }
+
+    public function upload_list() {
+        $strata = Stratum::all();
+        $studies = Study::all();
+        $sites = Site::all();
+
+        return view('allocations.allocation_list')->with([
+            'strata' => $strata,
+            'studies' => $studies,
+            'sites' => $sites,
+
+        ]);
+    }
+    public function upload(Request  $request) {
+        $data = request()->validate([
+            'stratum' => 'required|max:10',
+            'study' => 'required|max:10',
+            'site' => 'required|max:10',
+            'file' => 'required|file',
+        ]);
+
+
+        $file = $request->file('file');
+
+        // File Details
+        $filename = $file->getClientOriginalName();
+        $extension = $file->getClientOriginalExtension();
+        $tempPath = $file->getRealPath();
+        $fileSize = $file->getSize();
+        $mimeType = $file->getMimeType();
+
+        // Valid File Extensions
+        $valid_extension = array("csv");
+
+        // 2MB in Bytes
+        $maxFileSize = 2097152;
+
+        // Check file extension
+        if(in_array(strtolower($extension),$valid_extension)){
+
+            // Check file size
+            if($fileSize <= $maxFileSize){
+
+                // File upload location
+                $location = 'public/uploads';
+
+                // Upload file
+                $file->move($location,$filename);
+
+                // Import CSV to Database
+                $filepath = public_path($location."/".$filename);
+
+                // Reading file
+                $file = fopen($filepath,"r");
+
+                $importData_arr = array();
+                $i = 0;
+
+                while (($filedata = fgetcsv($file, 1000, ",")) !== FALSE) {
+                    $num = count($filedata );
+
+                    if($i == 0){
+                        $i++;
+                        continue;
+                    }
+                    for ($c=0; $c < $num; $c++) {
+
+//                        if($c == 0){
+//                            $c++;
+//                            continue;
+//                        }
+                        $importData_arr[$i][] = $filedata [$c];
+                    }
+                    $i++;
+                }
+                fclose($file);
+
+//                dd($importData_arr);
+                // Insert to MySQL database
+                foreach($importData_arr as $importData){
+
+
+                    $sequence = $importData[0];
+                    $allocation = $importData[1];
+
+                    $allocList = new AllocationList();
+                    $allocList->sequence = $sequence;
+                    $allocList->study_id = $request->study;
+                    $allocList->site_id = $request->site;
+                    $allocList->stratum_id = $request->stratum;
+                    $allocList->allocation = $allocation;
+                    $allocList->saveOrFail();
+
+                    Session::flash('success','Allocation list has been uploaded successfully');
+
+                }
+
+            }else{
+                Session::flash('warning','File too large. File must be less than 2MB.');
+            }
+
+        }else{
+            Session::flash('warning','Invalid File Extension. Only upload .csv files');
+        }
+
+
+        return redirect()->back();
+
+    }
+
+}

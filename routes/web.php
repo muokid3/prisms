@@ -55,6 +55,19 @@ Route::group(['middleware' => ['auth']], function () {
     Route::put('sites', 'SitesController@update_site')->name('update-site');
     Route::delete('sites/{_id}', 'SitesController@delete_site')->name('delete-site');
 
+    //strata
+    Route::get('/strata', 'AllocationController@strata');
+    Route::post('/strata', 'AllocationController@create_strata');
+    Route::get('ajax/strata', 'AllocationController@strataDT')->name('strata-dt');
+    Route::get('strata/{_id}', 'AllocationController@edit_strata')->name('edit-strata');
+    Route::put('strata', 'AllocationController@update_strata')->name('update-strata');
+    Route::delete('strata/{_id}', 'AllocationController@delete_strata')->name('delete-strata');
+
+    //allocation list
+    Route::get('/allocation/upload', 'AllocationController@upload_list');
+    Route::post('/allocation/upload', 'AllocationController@upload');
+
+
 
     //randomization
     Route::get('/randomization', 'RandomizationController@randomization');
