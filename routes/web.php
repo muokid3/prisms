@@ -71,9 +71,7 @@ Route::group(['middleware' => ['auth']], function () {
 
     //randomization
     Route::get('/randomization', 'RandomizationController@randomization');
-    Route::post('/randomization', 'RandomizationController@create_randomization');
     Route::get('ajax/randomization', 'RandomizationController@randomizationDT')->name('randomization-dt');
-    Route::delete('randomization/{_id}', 'RandomizationController@delete_randomization')->name('delete-randomization');
 
 
     //sms

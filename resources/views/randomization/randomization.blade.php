@@ -38,56 +38,6 @@
                 "order": [[0, "desc"]]
             });
 
-            // live search
-
-            var _ModalTitle = $('#user-modal-title'),
-                _SpoofInput = $('#user-spoof-input'),
-                _Form = $('#user-form');
-
-            // edit   product
-            $(document).on('click', '.edit-user-btn', function() {
-                var _Btn = $(this);
-                var _id = _Btn.attr('acs-id'),
-                    _Form = $('#user-form');
-
-                if (_id !== '') {
-                    $.ajax({
-                        url: _Btn.attr('source'),
-                        type: 'get',
-                        dataType: 'json',
-                        beforeSend: function() {
-                            _ModalTitle.text('Edit');
-                            _SpoofInput.removeAttr('disabled');
-                        },
-                        success: function(data) {
-                            console.log(data);
-                            // populate the modal fields using data from the server
-                            $('#first_name').val(data['first_name']);
-                            $('#last_name').val(data['last_name']);
-                            $('#email').val(data['email']);
-                            $('#phone_no').val(data['phone_no']);
-                            $("#user_group").val(data['user_group']).change();
-                            $('#id').val(data['id']);
-
-                            // set the update url
-                            var action =  _Form .attr('action');
-                            // action = action + '/' + season_id;
-                            console.log(action);
-                            _Form .attr('action', action);
-
-                            // open the modal
-                            $('#user-modal').modal('show');
-                        }
-                    });
-                }
-            });
-
-            $(document).on('submit', '.del_site_form', function() {
-                if (confirm('Are you sure you want to delete this site?')) {
-                    return true;
-                }
-                return false;
-            });
 
 
 
@@ -97,28 +47,23 @@
 
 @section('content')
     <div class="container-fluid">
-        <h1 class="mt-4">Allocation Lists</h1>
+        <h1 class="mt-4">Randomization Log</h1>
         <ol class="breadcrumb mb-4">
             <li class="breadcrumb-item"><a href="{{url('/')}}">Dashboard</a></li>
-            <li class="breadcrumb-item active">Allocation List</li>
+            <li class="breadcrumb-item active">Randomization Log</li>
         </ol>
         <div class="card mb-4">
             <div class="card-body">
-               Upload and view allocation lists
+               View your randomization log
             </div>
         </div>
         <div class="card mb-4">
             <div class="card-header">
                 <i class="fas fa-table mr-1"></i>
-                Allocation sites
+                Randomization Log
             </div>
             <div class="card-body">
 
-                <div class="toolbar">
-                    <button class="btn btn-primary btn-sm" data-toggle="modal" data-target="#user-modal">
-                        <i class="fa fa-plus"></i> Upload Allocation List
-                    </button>
-                </div>
                 @include('layouts.success')
                 @include('layouts.warnings')
                 @include('layouts.warning')

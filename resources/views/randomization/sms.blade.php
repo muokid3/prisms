@@ -11,8 +11,11 @@
                 ajax: '{{ route('sms-dt') }}', // the route to be called via ajax
                 columns: [ // datatable columns
                     {data: 'id', name: 'id'},
-                    {data: 'source', name: 'source'},
-                    {data: 'text', name: 'text'},
+                    {data: 'incoming_text', name: 'incoming_text'},
+                    {data: 'outgoing_text', name: 'outgoing_text'},
+                    {data: 'time_in', name: 'time_in'},
+                    {data: 'time_out', name: 'time_out'},
+                    {data: 'latency', name: 'latency'},
                 ],
                 /*columnDefs: [
                     {searchable: false, targets: [5]},
@@ -32,56 +35,6 @@
             });
 
             // live search
-
-            var _ModalTitle = $('#user-modal-title'),
-                _SpoofInput = $('#user-spoof-input'),
-                _Form = $('#user-form');
-
-            // edit   product
-            $(document).on('click', '.edit-user-btn', function() {
-                var _Btn = $(this);
-                var _id = _Btn.attr('acs-id'),
-                    _Form = $('#user-form');
-
-                if (_id !== '') {
-                    $.ajax({
-                        url: _Btn.attr('source'),
-                        type: 'get',
-                        dataType: 'json',
-                        beforeSend: function() {
-                            _ModalTitle.text('Edit');
-                            _SpoofInput.removeAttr('disabled');
-                        },
-                        success: function(data) {
-                            console.log(data);
-                            // populate the modal fields using data from the server
-                            $('#first_name').val(data['first_name']);
-                            $('#last_name').val(data['last_name']);
-                            $('#email').val(data['email']);
-                            $('#phone_no').val(data['phone_no']);
-                            $("#user_group").val(data['user_group']).change();
-                            $('#id').val(data['id']);
-
-                            // set the update url
-                            var action =  _Form .attr('action');
-                            // action = action + '/' + season_id;
-                            console.log(action);
-                            _Form .attr('action', action);
-
-                            // open the modal
-                            $('#user-modal').modal('show');
-                        }
-                    });
-                }
-            });
-
-            $(document).on('submit', '.del_site_form', function() {
-                if (confirm('Are you sure you want to delete this site?')) {
-                    return true;
-                }
-                return false;
-            });
-
 
 
         });
@@ -118,15 +71,21 @@
                             <thead>
                             <tr>
                                 <th>ID</th>
-                                <th>Source</th>
-                                <th>Text</th>
+                                <th>Incoming Text</th>
+                                <th>Outgoing Text</th>
+                                <th>Time In</th>
+                                <th>Time Out</th>
+                                <th>Latency</th>
                             </tr>
                             </thead>
                             <tfoot>
                             <tr>
                                 <th>ID</th>
-                                <th>Source</th>
-                                <th>Text</th>
+                                <th>Incoming Text</th>
+                                <th>Outgoing Text</th>
+                                <th>Time In</th>
+                                <th>Time Out</th>
+                                <th>Latency</th>
                             </tr>
                             </tfoot>
                         </table>

@@ -26,7 +26,20 @@ class RandomizationController extends Controller
         ]);
     }
     public function randomizationDT() {
-        $allocation= AllocationList::all();
+
+        if (auth()->user()->user_group == 1){
+            //show all
+            $allocation= AllocationList::whereNotNull('date_randomised')
+                ->whereNotNull('participant_id')
+                ->get();
+        }else{
+            //show only mine
+            $allocation= AllocationList::where('user_id', auth()->user()->id)
+                ->whereNotNull('date_randomised')
+                ->whereNotNull('participant_id')
+                ->get();
+        }
+
 
         return DataTables::of($allocation)
             ->addColumn('study', function ($allocation) {
@@ -37,6 +50,9 @@ class RandomizationController extends Controller
             })
             ->addColumn('site',function ($allocation) {
                 return optional($allocation->site)->site_name;
+            })
+            ->addColumn('stratum',function ($allocation) {
+                return optional($allocation->stratum)->stratum;
             })
             ->editColumn('date_randomised', function($allocation) {
                 return Carbon::parse($allocation->date_randomised)->isoFormat('MMMM Do YYYY');
@@ -58,18 +74,6 @@ class RandomizationController extends Controller
             ->make(true);
 
     }
-    public function delete_randomization($id)
-    {
-        try {
-            Study::destroy($id);
-
-            request()->session()->flash('success', 'Study has been deleted.');
-        } catch (QueryException $qe) {
-            request()->session()->flash('warning', 'Could not delete study because it\'s being used in the system!');
-        }
-
-        return redirect()->back();
-    }
 
     public function sms() {
         $sms= Inbox::all();
@@ -80,24 +84,21 @@ class RandomizationController extends Controller
         ]);
     }
     public function smsDT() {
-        $sms= Inbox::all();
+        $sms= Inbox::join('sent', 'inbox.id', '=', 'sent.message_id')
+            ->select('inbox.id', 'inbox.text as incoming_text', 'sent.text as outgoing_text','inbox.timestamp as time_in','sent.timestamp as time_out')
+            ->get();
 
         return DataTables::of($sms)
 
-//
-//            ->addColumn('actions', function($study) {
-//                $actions = '<div class="pull-right">';
-////                $actions = '<div class="pull-right">
-////                        <button source="' . route('edit-user' ,  $user->id) . '"
-////                    class="btn btn-warning btn-sm edit-user-btn" acs-id="'.$user->id .'">
-////                    <i class="fa fa-edit">edit</i> Edit</button>';
-//                $actions .= '<form action="'. route('delete-study',  $study->id) .'" style="display: inline; margin-left:10px" method="post" class="del_study_form">';
-//                $actions .= method_field('DELETE');
-//                $actions .= csrf_field() .'<button class="btn btn-danger btn-sm"><i class="fa fa-delete">edit</i>  Delete</button></form>';
-//                $actions .= '</div>';
-//                return $actions;
-//            })
-//            ->rawColumns(['actions'])
+            ->addColumn('latency', function ($sms) {
+
+                $from  = Carbon::createFromFormat('Y-m-d H:i:s', $sms->time_in);
+                $to  = Carbon::createFromFormat('Y-m-d H:i:s', $sms->time_out);
+
+                $diff_in_minutes = $to->diffInSeconds($from);
+                return $diff_in_minutes." Secs. (".$to->diffForHumans($from).")";
+            })
+
             ->make(true);
 
     }
