@@ -145,17 +145,17 @@
 
                                     <div class="row clearfix">
                                         <div class="col-md-12 {{ $errors->has('permission') ? ' has-error' : '' }}" style="margin-bottom: 0px">
-                                            <div class="input-group input-group-lg">
-                                                <div class="form-group bmd-form-group">
-                                                    <select id="permission" name="permission[]" multiple class="dropdown form-control" data-style="select-with-transition">
-                                                        @foreach(\App\Permission::all() as $perm)
-                                                            @if(!$group->has_perm([$perm->id],$group->id))
-                                                                <option value="{{$perm->id}}">{{$perm->name}}</option>
-                                                            @endif
-                                                        @endforeach
-                                                    </select>
+                                           <div class="form-group">
+                                                <label class="control-label" for="permission" style="line-height: 6px;">Select Permissions</label>
 
-                                                </div>
+                                                <select id="permission" name="permission[]" multiple class="dropdown form-control" data-style="select-with-transition">
+                                                    @foreach(\App\Permission::all() as $perm)
+                                                        @if(!$group->has_perm([$perm->id],$group->id))
+                                                            <option value="{{$perm->id}}">{{$perm->name}}</option>
+                                                        @endif
+                                                    @endforeach
+                                                </select>
+
                                             </div>
 
                                             <div class="input-group input-group-lg">
