@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\AllocationList;
 use App\Inbox;
+use App\SiteStudy;
 use Carbon\Carbon;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
@@ -34,7 +35,8 @@ class RandomizationController extends Controller
                 ->get();
         }else{
             //show only mine
-            $allocation= AllocationList::where('user_id', auth()->user()->id)
+            $studyIds = SiteStudy::where('study_coordinator', auth()->user()->id)->get('study_id');
+            $allocation= AllocationList::whereIn('study_id', $studyIds)
                 ->whereNotNull('date_randomised')
                 ->whereNotNull('participant_id')
                 ->get();
