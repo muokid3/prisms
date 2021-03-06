@@ -23,7 +23,6 @@ class CreateUsersTable extends Migration
             $table->string('title');
             $table->string('first_name');
             $table->string('last_name');
-            $table->string('study');
 
             $table->unsignedBigInteger('site_id');
             $table->foreign('site_id')->references('id')->on('sites');

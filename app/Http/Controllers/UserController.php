@@ -78,7 +78,6 @@ class UserController extends Controller
             'phone_no' => 'required|max:12|unique:users,phone_no',
             'email' => 'required|email|max:255|unique:users,email',
             'title'  => 'required',
-            'study'  => 'required',
             'site'  => 'required',
             'first_name' => 'required',
             'last_name' => 'required',
@@ -86,11 +85,9 @@ class UserController extends Controller
 
         $this->random_pass = $this->randomPassword();
 
-        $study = Study::find($request->study);
 
         $user = new User();
         $user->user_group = $request->user_group;
-        $user->study = is_null($study) ? "BLAST" : $study->study;
         $user->email = $request->email;
         $user->phone_no = $request->phone_no;
         $user->first_name = $request->first_name;
@@ -130,14 +127,12 @@ class UserController extends Controller
             'email' => 'required|email|max:255|unique:users,email,'.$request->id,
             'title'  => 'required',
             'site'  => 'required',
-            'study'  => 'required',
             'first_name' => 'required',
             'last_name' => 'required',
             'id' => 'required',
         ]);
 
 
-        $study = Study::find($request->study);
 
         $user = User::find($request->id);
         $user->user_group = $request->user_group;
@@ -147,7 +142,6 @@ class UserController extends Controller
         $user->last_name = $request->last_name;
         $user->title = $request->title;
         $user->site_id = $request->site;
-        $user->study = is_null($study) ? "BLAST" : $study->study;;
         $user->update();
 
         request()->session()->flash('success', 'User has been updated.');

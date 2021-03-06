@@ -40,7 +40,7 @@
                 _Form = $('#user-form');
 
             // edit   product
-            $(document).on('click', '.edit-user-btn', function() {
+            $(document).on('click', '.edit-site-btn', function() {
                 var _Btn = $(this);
                 var _id = _Btn.attr('acs-id'),
                     _Form = $('#user-form');
@@ -57,11 +57,7 @@
                         success: function(data) {
                             console.log(data);
                             // populate the modal fields using data from the server
-                            $('#first_name').val(data['first_name']);
-                            $('#last_name').val(data['last_name']);
-                            $('#email').val(data['email']);
-                            $('#phone_no').val(data['phone_no']);
-                            $("#user_group").val(data['user_group']).change();
+                            $('#site_name').val(data['site_name']);
                             $('#id').val(data['id']);
 
                             // set the update url
@@ -147,88 +143,45 @@
     </div>
 
     {{--modal--}}
-{{--    <div class="modal fade" id="user-modal" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">--}}
-{{--        <div class="modal-dialog ">--}}
-{{--            <div class="modal-content">--}}
-{{--                <div class="modal-header">--}}
-{{--                    <h4 class="modal-title" id="myModalLabel"> <span id="user-modal-title">Add </span> New User</h4>--}}
-{{--                </div>--}}
-{{--                <div class="modal-body" >--}}
-{{--                    <form id="userform" action="{{ url('studies') }}" method="post" id="user-form" enctype="multipart/form-data">--}}
-{{--                        {{ csrf_field() }}--}}
-{{--                        --}}{{--spoofing--}}
-{{--                        <input type="hidden" name="_method" id="user-spoof-input" value="PUT" disabled/>--}}
+    <div class="modal fade" id="user-modal" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog ">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title" id="myModalLabel"> <span id="user-modal-title">Add </span> Site</h4>
+                </div>
+                <div class="modal-body" >
+                    <form id="userform" action="{{ url('sites') }}" method="post" id="user-form" enctype="multipart/form-data">
+                        {{ csrf_field() }}
+                        <input type="hidden" name="_method" id="user-spoof-input" value="PUT" disabled/>
+                        <div class="row">
 
-{{--                        <div class="row">--}}
-{{--                            <div class="col-md-6">--}}
-{{--                                <div class="form-group">--}}
-{{--                                    <label class="control-label" for="first_name">First Name</label>--}}
-{{--                                    <input type="text" value="{{ $edit ? $selected_user->first_name : old('first_name') }}" class="form-control" id="first_name" name="first_name" required />--}}
-{{--                                </div>--}}
-{{--                            </div>--}}
-
-{{--                            <div class="col-md-6">--}}
-{{--                                <div class="form-group">--}}
-{{--                                    <label class="control-label" for="first_name">Last Name</label>--}}
-{{--                                    <input type="text" value="{{ $edit ? $selected_user->last_name : old('last_name') }}" class="form-control" id="last_name" name="last_name" required />--}}
-{{--                                </div>--}}
-{{--                            </div>--}}
-
-{{--                            <div class="col-md-12">--}}
-{{--                                <div class="form-group ">--}}
-{{--                                    --}}{{--<label class="control-label" for="user_role" style="line-height: 6px;">User Role</label>--}}
-
-{{--                                        <select class="dropdown form-control" data-style="select-with-transition" title="Choose User Group" tabindex="-98"--}}
-{{--                                                name="user_group" id="user_group" required>--}}
-{{--                                            @foreach( $user_roles as $user_role)--}}
-{{--                                                <option value="{{ $user_role->id  }}">{{ $user_role->name }}</option>--}}
-{{--                                            @endforeach--}}
-{{--                                        </select>--}}
-
-{{--                                </div>--}}
-{{--                            </div>--}}
-
-{{--                        </div>--}}
+                            <div class="col-md-12">
+                                <div class="form-group">
+                                    <label class="control-label" for="site_name">Site Name</label>
+                                    <input type="text" value="{{ old('site_name') }}" class="form-control" id="site_name" name="site_name" required />
+                                </div>
+                            </div>
 
 
-{{--                        <div class="row">--}}
-{{--                            <div class="col-md-12">--}}
-{{--                                <div class="form-group">--}}
-{{--                                    <label class="control-label" for="email">Email</label>--}}
-{{--                                    <input type="email" value="{{$edit ? $selected_user->email :  old('email') }}" class="form-control pb-0 mt-2" name="email" id="email" required/>--}}
-{{--                                </div>--}}
-{{--                            </div>--}}
-
-{{--                        </div>--}}
-
-{{--                        <div class="row">--}}
-{{--                            <div class="col-md-12">--}}
-{{--                                <div class="form-group">--}}
-{{--                                    <label class="control-label" for="email">Phone Number</label>--}}
-{{--                                    <input type="number" value="{{ old('phone_no') }}" class="form-control pb-0 mt-2" name="phone_no" id="phone_no" required/>--}}
-{{--                                </div>--}}
-{{--                            </div>--}}
-
-{{--                        </div>--}}
+                        </div>
 
 
 
-{{--                        <input type="hidden" name="id" id="id"/>--}}
-{{--                        <div class="form-group">--}}
-{{--                            <button type="button" class="btn btn-default" data-dismiss="modal"><i class="fa fa-window-close"></i> Close</button>--}}
-{{--                            <button class="btn btn-success" id="save-brand"><i class="fa fa-save"></i> Save</button>--}}
-{{--                        </div>--}}
+                        <input type="hidden" name="id" id="id"/>
+                        <div class="form-group">
+                            <button type="button" class="btn btn-default" data-dismiss="modal"><i class="fa fa-window-close"></i> Close</button>
+                            <button class="btn btn-success" id="save-brand"><i class="fa fa-save"></i> Save</button>
+                        </div>
 
-{{--                    </form>--}}
-{{--                    --}}{{--hidden fields--}}
+                    </form>
+                </div>
 
-{{--                </div>--}}
+                <!--<div class="modal-footer">-->
+                <!---->
+                <!--</div>-->
+            </div>
+        </div>
+    </div>
 
-{{--                <!--<div class="modal-footer">-->--}}
-{{--                <!---->--}}
-{{--                <!--</div>-->--}}
-{{--            </div>--}}
-{{--        </div>--}}
-{{--    </div>--}}
 
 @endsection

@@ -36,6 +36,8 @@ Route::group(['middleware' => ['auth']], function () {
     Route::get('/studies', 'SitesController@studies');
     Route::post('/studies', 'SitesController@create_study');
     Route::get('ajax/studies', 'SitesController@studiesDT')->name('studies-dt');
+    Route::get('studies/{_id}', 'SitesController@edit_study')->name('edit-study');
+    Route::put('studies', 'SitesController@update_study')->name('update-study');
     Route::delete('studies/{_id}', 'SitesController@delete_study')->name('delete-study');
 
 
@@ -49,10 +51,12 @@ Route::group(['middleware' => ['auth']], function () {
     Route::get('/sites', 'SitesController@sites');
     Route::post('/sites', 'SitesController@create_site');
     Route::get('ajax/sites', 'SitesController@sitesDT')->name('sites-dt');
+    Route::get('sites/{_id}', 'SitesController@edit_site')->name('edit-site');
+    Route::put('sites', 'SitesController@update_site')->name('update-site');
     Route::delete('sites/{_id}', 'SitesController@delete_site')->name('delete-site');
 
 
-    //studies
+    //randomization
     Route::get('/randomization', 'RandomizationController@randomization');
     Route::post('/randomization', 'RandomizationController@create_randomization');
     Route::get('ajax/randomization', 'RandomizationController@randomizationDT')->name('randomization-dt');

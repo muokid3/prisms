@@ -122,7 +122,8 @@
                 @include('layouts.warning')
 
 
-                <div class="table table-responsive">
+                <div class="loader" style="display: none;">Loading...</div>
+                <div class="material-datatables">
                     <table id="site-studies-dt" class="table table-striped table-no-bordered table-hover" cellspacing="0" width="100%" style="width:100%">
                         <thead>
                         <tr>
@@ -153,88 +154,94 @@
     </div>
 
     {{--modal--}}
-{{--    <div class="modal fade" id="user-modal" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">--}}
-{{--        <div class="modal-dialog ">--}}
-{{--            <div class="modal-content">--}}
-{{--                <div class="modal-header">--}}
-{{--                    <h4 class="modal-title" id="myModalLabel"> <span id="user-modal-title">Add </span> New User</h4>--}}
-{{--                </div>--}}
-{{--                <div class="modal-body" >--}}
-{{--                    <form id="userform" action="{{ url('studies') }}" method="post" id="user-form" enctype="multipart/form-data">--}}
-{{--                        {{ csrf_field() }}--}}
-{{--                        --}}{{--spoofing--}}
-{{--                        <input type="hidden" name="_method" id="user-spoof-input" value="PUT" disabled/>--}}
+    <div class="modal fade" id="user-modal" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog ">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title" id="myModalLabel"> <span id="user-modal-title">Add </span> Site Study</h4>
+                </div>
+                <div class="modal-body" >
+                    <form id="userform" action="{{ url('site_studies') }}" method="post" id="user-form" enctype="multipart/form-data">
+                        {{ csrf_field() }}
+{{--                        spoofing--}}
+                        <input type="hidden" name="_method" id="user-spoof-input" value="PUT" disabled/>
 
-{{--                        <div class="row">--}}
-{{--                            <div class="col-md-6">--}}
-{{--                                <div class="form-group">--}}
-{{--                                    <label class="control-label" for="first_name">First Name</label>--}}
-{{--                                    <input type="text" value="{{ $edit ? $selected_user->first_name : old('first_name') }}" class="form-control" id="first_name" name="first_name" required />--}}
-{{--                                </div>--}}
-{{--                            </div>--}}
+                        <div class="row">
 
-{{--                            <div class="col-md-6">--}}
-{{--                                <div class="form-group">--}}
-{{--                                    <label class="control-label" for="first_name">Last Name</label>--}}
-{{--                                    <input type="text" value="{{ $edit ? $selected_user->last_name : old('last_name') }}" class="form-control" id="last_name" name="last_name" required />--}}
-{{--                                </div>--}}
-{{--                            </div>--}}
+                            <div class="col-md-12">
+                                <div class="form-group ">
+                                    <label class="control-label" for="site" style="line-height: 6px;">Site</label>
 
-{{--                            <div class="col-md-12">--}}
-{{--                                <div class="form-group ">--}}
-{{--                                    --}}{{--<label class="control-label" for="user_role" style="line-height: 6px;">User Role</label>--}}
+                                    <select class="dropdown form-control" data-style="select-with-transition" title="Choose Site" tabindex="-98"
+                                            name="site" id="site" required>
+                                        <option value="">Select site</option>
+                                        @foreach( \App\Site::all() as $site)
+                                            <option value="{{ $site->id  }}">{{ $site->site_name }}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                            </div>
 
-{{--                                        <select class="dropdown form-control" data-style="select-with-transition" title="Choose User Group" tabindex="-98"--}}
-{{--                                                name="user_group" id="user_group" required>--}}
-{{--                                            @foreach( $user_roles as $user_role)--}}
-{{--                                                <option value="{{ $user_role->id  }}">{{ $user_role->name }}</option>--}}
-{{--                                            @endforeach--}}
-{{--                                        </select>--}}
+                            <div class="col-md-12">
+                                <div class="form-group ">
+                                    <label class="control-label" for="study" style="line-height: 6px;">Study</label>
 
-{{--                                </div>--}}
-{{--                            </div>--}}
+                                    <select class="dropdown form-control" data-style="select-with-transition" title="Choose Study" tabindex="-98"
+                                            name="study" id="study" required>
+                                        <option value="">Select study</option>
+                                        @foreach( \App\Study::all() as $study)
+                                            <option value="{{ $study->id  }}">{{ $study->study }}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                            </div>
 
-{{--                        </div>--}}
+                            <div class="col-md-12">
+                                <div class="form-group ">
+                                    <label class="control-label" for="coordinator" style="line-height: 6px;">Coordinator</label>
 
-
-{{--                        <div class="row">--}}
-{{--                            <div class="col-md-12">--}}
-{{--                                <div class="form-group">--}}
-{{--                                    <label class="control-label" for="email">Email</label>--}}
-{{--                                    <input type="email" value="{{$edit ? $selected_user->email :  old('email') }}" class="form-control pb-0 mt-2" name="email" id="email" required/>--}}
-{{--                                </div>--}}
-{{--                            </div>--}}
-
-{{--                        </div>--}}
-
-{{--                        <div class="row">--}}
-{{--                            <div class="col-md-12">--}}
-{{--                                <div class="form-group">--}}
-{{--                                    <label class="control-label" for="email">Phone Number</label>--}}
-{{--                                    <input type="number" value="{{ old('phone_no') }}" class="form-control pb-0 mt-2" name="phone_no" id="phone_no" required/>--}}
-{{--                                </div>--}}
-{{--                            </div>--}}
-
-{{--                        </div>--}}
+                                    <select class="dropdown form-control" data-style="select-with-transition" title="Choose Coordinator" tabindex="-98"
+                                            name="coordinator" id="coordinator" required>
+                                        <option value="">Select coordinator</option>
+                                        @foreach( \App\User::all() as $user)
+                                            <option value="{{ $user->id  }}">{{ $user->first_name.' '.$user->last_name }}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                            </div>
 
 
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="control-label" for="date_initiated">Date Initiated</label>
+                                    <input type="text" value="{{ old('date_initiated') }}" class="form-control" id="datepicker"  name="date_initiated" required />
+                                </div>
+                            </div>
 
-{{--                        <input type="hidden" name="id" id="id"/>--}}
-{{--                        <div class="form-group">--}}
-{{--                            <button type="button" class="btn btn-default" data-dismiss="modal"><i class="fa fa-window-close"></i> Close</button>--}}
-{{--                            <button class="btn btn-success" id="save-brand"><i class="fa fa-save"></i> Save</button>--}}
-{{--                        </div>--}}
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="control-label" for="status">Status</label>
+                                    <input type="text" value="{{ old('status') }}" class="form-control" id="status" name="status" required />
+                                </div>
+                            </div>
+                        </div>
 
-{{--                    </form>--}}
-{{--                    --}}{{--hidden fields--}}
 
-{{--                </div>--}}
+                        <input type="hidden" name="id" id="id"/>
+                        <div class="form-group">
+                            <button type="button" class="btn btn-default" data-dismiss="modal"><i class="fa fa-window-close"></i> Close</button>
+                            <button class="btn btn-success" id="save-brand"><i class="fa fa-save"></i> Save</button>
+                        </div>
 
-{{--                <!--<div class="modal-footer">-->--}}
-{{--                <!---->--}}
-{{--                <!--</div>-->--}}
-{{--            </div>--}}
-{{--        </div>--}}
-{{--    </div>--}}
+                    </form>
+
+                </div>
+
+                <!--<div class="modal-footer">-->
+                <!---->
+                <!--</div>-->
+            </div>
+        </div>
+    </div>
 
 @endsection

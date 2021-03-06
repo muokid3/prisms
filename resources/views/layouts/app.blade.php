@@ -14,6 +14,10 @@
     <title>{{ config('app.name', 'PRISMS') }}</title>
 
     <link href="{{url('css/styles.css')}}" rel="stylesheet" />
+    {{--datepicker css--}}
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.3.0/css/datepicker.min.css" />
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.3.0/css/datepicker3.min.css" />
+
 {{--    <link href="https://cdn.datatables.net/1.10.20/css/dataTables.bootstrap4.min.css" rel="stylesheet" crossorigin="anonymous" />--}}
     <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/js/all.min.js" crossorigin="anonymous"></script>
 </head>
@@ -64,6 +68,45 @@
 {{--<script src="https://cdn.datatables.net/1.10.20/js/dataTables.bootstrap4.min.js" crossorigin="anonymous"></script>--}}
 {{--<script src="{{url('assets/demo/datatables-demo.js')}}"></script>--}}
 <script src="{{ url('js/jquery.dataTables.min.js') }}"></script>
+
+<script src="{{ url('js/moment.min.js') }}"></script>
+
+{{--datepicker js--}}
+<script src="{{ url('js/bootstrap-datetimepicker.min.js') }}"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.3.0/js/bootstrap-datepicker.min.js"></script>
+
+{{--<script type="text/javascript" src="https://cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>--}}
+{{--<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>--}}
+
+<script type="text/javascript">
+
+
+
+
+    $(document).ready(function() {
+
+        $('.datepicker').datetimepicker({
+            format: 'YYYY-MM-DD'
+        });
+
+        $('#datatables').DataTable({
+            "pagingType": "full_numbers",
+            "lengthMenu": [
+                [10, 25, 50, -1],
+                [10, 25, 50, "All"]
+            ],
+            responsive: true,
+            language: {
+                search: "_INPUT_",
+                searchPlaceholder: "Search records",
+            },
+            "order": [[ 0, "desc" ]]
+        });
+
+        var table = $('#datatable').DataTable();
+    });
+
+</script>
 
 @yield('scripts')
 @stack('js')

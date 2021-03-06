@@ -14,7 +14,6 @@
                     {data: 'first_name', name: 'first_name'},
                     {data: 'last_name', name: 'last_name'},
                     {data: 'role', name: 'role'},
-                    {data: 'study', name: 'study'},
                     {data: 'phone_no', name: 'phone_no'},
                     {data: 'email', name: 'email'},
                     {data: 'actions', name: 'actions'},
@@ -133,7 +132,6 @@
                             <th>First Name</th>
                             <th>Last Name</th>
                             <th>Role</th>
-                            <th>Study</th>
                             <th>Phone No.</th>
                             <th>Email</th>
                             <th>Actions</th>
@@ -145,7 +143,6 @@
                             <th>First Name</th>
                             <th>Last Name</th>
                             <th>Role</th>
-                            <th>Study</th>
                             <th>Phone No.</th>
                             <th>Email</th>
                             <th>Actions</th>
@@ -223,20 +220,6 @@
                                             <option value="">Select site</option>
                                             @foreach( \App\Site::all() as $site)
                                                 <option value="{{ $site->id  }}">{{ $site->site_name }}</option>
-                                            @endforeach
-                                        </select>
-                                </div>
-                            </div>
-
-                            <div class="col-md-12">
-                                <div class="form-group ">
-                                    <label class="control-label" for="study" style="line-height: 6px;">Study</label>
-
-                                        <select class="dropdown form-control" data-style="select-with-transition" title="Choose Study" tabindex="-98"
-                                                name="study" id="study" required>
-                                            <option value="">Select study</option>
-                                            @foreach( \App\Study::all() as $study)
-                                                <option value="{{ $study->id  }}">{{ $study->study }}</option>
                                             @endforeach
                                         </select>
                                 </div>
