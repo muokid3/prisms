@@ -14,6 +14,7 @@
                     {data: 'first_name', name: 'first_name'},
                     {data: 'last_name', name: 'last_name'},
                     {data: 'role', name: 'role'},
+                    {data: 'study', name: 'study'},
                     {data: 'phone_no', name: 'phone_no'},
                     {data: 'email', name: 'email'},
                     {data: 'actions', name: 'actions'},
@@ -59,11 +60,13 @@
                         success: function(data) {
                             console.log(data);
                             // populate the modal fields using data from the server
+                            $('#title').val(data['title']);
                             $('#first_name').val(data['first_name']);
                             $('#last_name').val(data['last_name']);
                             $('#email').val(data['email']);
                             $('#phone_no').val(data['phone_no']);
                             $("#user_group").val(data['user_group']).change();
+                            $("#site").val(data['site_id']).change();
                             $('#id').val(data['id']);
 
                             // set the update url
@@ -130,6 +133,7 @@
                             <th>First Name</th>
                             <th>Last Name</th>
                             <th>Role</th>
+                            <th>Study</th>
                             <th>Phone No.</th>
                             <th>Email</th>
                             <th>Actions</th>
@@ -141,6 +145,7 @@
                             <th>First Name</th>
                             <th>Last Name</th>
                             <th>Role</th>
+                            <th>Study</th>
                             <th>Phone No.</th>
                             <th>Email</th>
                             <th>Actions</th>
@@ -157,7 +162,7 @@
         <div class="modal-dialog ">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h4 class="modal-title" id="myModalLabel"> <span id="user-modal-title">Add </span> New User</h4>
+                    <h4 class="modal-title" id="myModalLabel"> <span id="user-modal-title">Add </span> User</h4>
                 </div>
                 <div class="modal-body" >
                     <form id="userform" action="{{ url('enroll') }}" method="post" id="user-form" enctype="multipart/form-data">
@@ -168,29 +173,72 @@
                         <div class="row">
                             <div class="col-md-6">
                                 <div class="form-group">
+                                    <label class="control-label" for="title">Title</label>
+                                    <input type="text" value="{{  old('title') }}" class="form-control" id="title" name="title" required />
+                                </div>
+                            </div>
+
+                            <div class="col-md-6">
+                                <div class="form-group">
                                     <label class="control-label" for="first_name">First Name</label>
-                                    <input type="text" value="{{ $edit ? $selected_user->first_name : old('first_name') }}" class="form-control" id="first_name" name="first_name" required />
+                                    <input type="text" value="{{  old('first_name') }}" class="form-control" id="first_name" name="first_name" required />
                                 </div>
                             </div>
 
                             <div class="col-md-6">
                                 <div class="form-group">
                                     <label class="control-label" for="first_name">Last Name</label>
-                                    <input type="text" value="{{ $edit ? $selected_user->last_name : old('last_name') }}" class="form-control" id="last_name" name="last_name" required />
+                                    <input type="text" value="{{ old('last_name') }}" class="form-control" id="last_name" name="last_name" required />
+                                </div>
+                            </div>
+
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="control-label" for="phone_no">Phone Number</label>
+                                    <input type="number" value="{{ old('phone_no') }}" class="form-control pb-0 mt-2" name="phone_no" id="phone_no" required/>
                                 </div>
                             </div>
 
                             <div class="col-md-12">
                                 <div class="form-group ">
-                                    {{--<label class="control-label" for="user_role" style="line-height: 6px;">User Role</label>--}}
+                                    <label class="control-label" for="user_group" style="line-height: 6px;">User Role</label>
 
-                                        <select class="dropdown form-control" data-style="select-with-transition" title="Choose User Group" tabindex="-98"
+                                        <select class="dropdown form-control" data-style="select-with-transition" title="Choose User Role" tabindex="-98"
                                                 name="user_group" id="user_group" required>
-                                            @foreach( $user_roles as $user_role)
+                                            <option value="">Select role</option>
+
+                                        @foreach( $user_roles as $user_role)
                                                 <option value="{{ $user_role->id  }}">{{ $user_role->name }}</option>
                                             @endforeach
                                         </select>
+                                </div>
+                            </div>
 
+                            <div class="col-md-12">
+                                <div class="form-group ">
+                                    <label class="control-label" for="site" style="line-height: 6px;">Site</label>
+
+                                        <select class="dropdown form-control" data-style="select-with-transition" title="Choose Site" tabindex="-98"
+                                                name="site" id="site" required>
+                                            <option value="">Select site</option>
+                                            @foreach( \App\Site::all() as $site)
+                                                <option value="{{ $site->id  }}">{{ $site->site_name }}</option>
+                                            @endforeach
+                                        </select>
+                                </div>
+                            </div>
+
+                            <div class="col-md-12">
+                                <div class="form-group ">
+                                    <label class="control-label" for="study" style="line-height: 6px;">Study</label>
+
+                                        <select class="dropdown form-control" data-style="select-with-transition" title="Choose Study" tabindex="-98"
+                                                name="study" id="study" required>
+                                            <option value="">Select study</option>
+                                            @foreach( \App\Study::all() as $study)
+                                                <option value="{{ $study->id  }}">{{ $study->study }}</option>
+                                            @endforeach
+                                        </select>
                                 </div>
                             </div>
 
@@ -201,21 +249,13 @@
                             <div class="col-md-12">
                                 <div class="form-group">
                                     <label class="control-label" for="email">Email</label>
-                                    <input type="email" value="{{$edit ? $selected_user->email :  old('email') }}" class="form-control pb-0 mt-2" name="email" id="email" required/>
+                                    <input type="email" value="{{ old('email') }}" class="form-control pb-0 mt-2" name="email" id="email" required/>
                                 </div>
                             </div>
 
                         </div>
 
-                        <div class="row">
-                            <div class="col-md-12">
-                                <div class="form-group">
-                                    <label class="control-label" for="email">Phone Number</label>
-                                    <input type="number" value="{{ old('phone_no') }}" class="form-control pb-0 mt-2" name="phone_no" id="phone_no" required/>
-                                </div>
-                            </div>
 
-                        </div>
 
 
 

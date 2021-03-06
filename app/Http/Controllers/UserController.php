@@ -2,12 +2,15 @@
 
 namespace App\Http\Controllers;
 
+use App\Notifications\UserCreated;
+use App\Study;
 use App\User;
 use App\UserGroup;
 use App\UserPermission;
 
 use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Session;
 use Yajra\DataTables\Facades\DataTables;
 
@@ -70,74 +73,40 @@ class UserController extends Controller
 
     public function register_user(Request $request)
     {
-        $this->validate($request, [
-            'user_role' => 'required|max:10',
+        $data = request()->validate([
+            'user_group' => 'required|max:10',
+            'phone_no' => 'required|max:12|unique:users,phone_no',
             'email' => 'required|email|max:255|unique:users,email',
-            'surname' => 'required',
-            'mobile_no' => 'required|max:12|unique:users,mobile_no',
-            'gender' => 'required',
-            'photo' => 'nullable|mimes:jpg,jpeg,png',
+            'title'  => 'required',
+            'study'  => 'required',
+            'site'  => 'required',
+            'first_name' => 'required',
+            'last_name' => 'required',
         ]);
 
         $this->random_pass = $this->randomPassword();
 
-        $wallet = new Wallet();
-        $wallet->current_balance = 0.0;
-        $wallet->previous_balance = 0.0;
-        $wallet->saveOrFail();
+        $study = Study::find($request->study);
 
         $user = new User();
-        $user->wallet_id = $wallet->id;
-        $user->role_id = $request->user_role;
+        $user->user_group = $request->user_group;
+        $user->study = is_null($study) ? "BLAST" : $study->study;
         $user->email = $request->email;
-        $user->mobile_no = $request->mobile_no;
+        $user->phone_no = $request->phone_no;
+        $user->first_name = $request->first_name;
+        $user->last_name = $request->last_name;
+        $user->title = $request->title;
+        $user->site_id = $request->site;
         $user->password = bcrypt($this->random_pass);
 
-        $masterfile = new MasterFile();
-        $masterfile->first_name = $request->first_name;
-        $masterfile->middle_name = $request->middle_name;
-        $masterfile->surname = $request->surname;
-        $masterfile->mobile_no2 = $request->mobile_no2;
-        $masterfile->id_no = $request->id_no;
-        $masterfile->gender = $request->gender;
-        $masterfile->created_by = auth()->user()->id;
 
-        if ($request->hasFile('image')){
 
-            $uploadedFile = $request->file('image');
-            $filename = time().$uploadedFile->getClientOriginalName();
+        DB::transaction(function() use ($user) {
 
-            $request->file('image')->storeAs("public/uploads", $filename);
+            $user->saveOrFail();
+            Session::flash("success", "User has been created");
 
-            $user->photo = "uploads/".$filename;
-        }
-
-        DB::transaction(function() use ($user, $masterfile) {
-
-            if ($user->saveOrFail()){
-                $masterfile->user_id = $user->id;
-                $masterfile->saveOrFail();
-                Session::flash("success", "User has been created");
-            }
-
-            if ($user->role_id == 1 || $user->role_id == 2){
-                //portal user
-                $user->notify(new PortalUserCreated($this->random_pass));
-
-                $message = "Your account has been created on ATP ERP system as a ".$user->role->role_name.
-                    ", check your email for a link to log in. Your password is ".$this->random_pass;
-
-                send_sms("+".$user->mobile_no,$message);
-
-            }else{
-                //app user
-                $user->notify(new AppUserCreated($this->random_pass));
-
-                $message = "Your account has been created on ATP ERP system as a ".$user->role->role_name.
-                    ", use your phone number (including the country code) to log in to the app. Your password is ".$this->random_pass;
-
-                send_sms("+".$user->mobile_no,$message);
-            }
+            //$user->notify(new UserCreated($this->random_pass));
 
 
         });
@@ -159,10 +128,16 @@ class UserController extends Controller
             'user_group' => 'required|max:10',
             'phone_no' => 'required|max:12|unique:users,phone_no,'.$request->id,
             'email' => 'required|email|max:255|unique:users,email,'.$request->id,
+            'title'  => 'required',
+            'site'  => 'required',
+            'study'  => 'required',
             'first_name' => 'required',
             'last_name' => 'required',
             'id' => 'required',
         ]);
+
+
+        $study = Study::find($request->study);
 
         $user = User::find($request->id);
         $user->user_group = $request->user_group;
@@ -170,6 +145,9 @@ class UserController extends Controller
         $user->phone_no = $request->phone_no;
         $user->first_name = $request->first_name;
         $user->last_name = $request->last_name;
+        $user->title = $request->title;
+        $user->site_id = $request->site;
+        $user->study = is_null($study) ? "BLAST" : $study->study;;
         $user->update();
 
         request()->session()->flash('success', 'User has been updated.');
