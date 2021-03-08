@@ -1,6 +1,9 @@
+
 @extends('layouts.app')
 
 @push('js')
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+
     <script>
 
         $(function() {
@@ -38,10 +41,55 @@
                 "order": [[0, "desc"]]
             });
 
-
-
-
         });
+
+        google.charts.load('current', {'packages':['corechart']});
+        google.charts.setOnLoadCallback(drawAllocationChart);
+
+        function drawAllocationChart() {
+            var items = [
+                    ['Treatment', 'Allocation'],
+                    @foreach ($allocations as $allocation)
+                        [ '{{ $allocation->allocation }}', {{ $allocation->total }}],
+                    @endforeach
+                ];
+
+           // console.log(items);
+
+            var data = google.visualization.arrayToDataTable(items);
+
+            var options = {'title':'Allocation rates', 'width':550, 'height':300};
+
+            var chart = new google.visualization.PieChart(document.getElementById('piechart'));
+            chart.draw(data, options);
+        }
+
+
+        google.charts.load('current', {'packages':['corechart']});
+        google.charts.setOnLoadCallback(drawTimeRandomizationChart);
+
+        function drawTimeRandomizationChart() {
+
+            var items = [
+                ['Date', 'Participants'],
+                    @foreach ($rates as $rate)
+                [ '{{ $rate->date_randomised }}', {{ $rate->total }}],
+                @endforeach
+            ];
+
+            var data = google.visualization.arrayToDataTable(items);
+
+            var options = {
+                title: 'Randomization rate per day',
+                // curveType: 'function',
+                legend: { position: 'bottom' },
+                height:300
+            };
+
+            var chart = new google.visualization.LineChart(document.getElementById('linechart'));
+
+            chart.draw(data, options);
+        }
     </script>
 @endpush
 
@@ -68,6 +116,29 @@
                 @include('layouts.warnings')
                 @include('layouts.warning')
 
+                <div class="row">
+                    <div class="col-lg-6">
+                        <div class="card mb-4">
+                            <div class="card-header">
+                                <i class="fas fa-chart-pie mr-1"></i>
+                                Treatment allocation
+                            </div>
+                            <div id="piechart"></div>
+                            <div class="card-footer small text-muted">Updated now</div>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-6">
+                        <div class="card mb-4">
+                            <div class="card-header">
+                                <i class="fas fa-chart-area mr-1"></i>
+                                Randomization over time
+                            </div>
+                            <div id="linechart"></div>
+                            <div class="card-footer small text-muted">Updated now</div>
+                        </div>
+                    </div>
+                </div>
 
 
                 <div class="table table-responsive">

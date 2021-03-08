@@ -8,6 +8,7 @@ use App\SiteStudy;
 use Carbon\Carbon;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Yajra\DataTables\Facades\DataTables;
 
 class RandomizationController extends Controller
@@ -19,10 +20,25 @@ class RandomizationController extends Controller
 
 
     public function randomization() {
-        $allocation= AllocationList::all();
+
+        $allocations = AllocationList::groupBy('allocation')
+            ->select('allocation', DB::raw('count(*) as total'))
+            ->whereNotNull('date_randomised')
+            ->whereNotNull('participant_id')
+            ->get();
+
+        $rates = AllocationList::select(DB::raw('Date(date_randomised) as date_randomised'), DB::raw('count(*) as total'))
+            ->whereNotNull('date_randomised')
+            ->whereNotNull('participant_id')
+            ->groupBy('date_randomised')
+            ->orderBy('date_randomised', 'ASC')
+            ->get();
+
+        //dd($rates);
 
         return view('randomization.randomization')->with([
-            'allocation' => $allocation,
+            'allocations' => $allocations,
+            'rates' => $rates,
 
         ]);
     }

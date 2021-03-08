@@ -58,6 +58,7 @@
 </div>
 {{--<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" crossorigin="anonymous"></script>--}}
 <script src="{{ url('js/jquery.min.js') }}" type="text/javascript"></script>
+<script src="{{ url('js/popper.min.js') }}" type="text/javascript"></script>
 <script src="{{ url('js/bootstrap-material-design.min.js') }}" type="text/javascript"></script>
 
 
