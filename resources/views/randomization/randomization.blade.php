@@ -83,7 +83,9 @@
                 title: 'Randomization rate per day',
                 // curveType: 'function',
                 legend: { position: 'bottom' },
-                height:300
+                height:300,
+                pointSize: 30,
+                pointShape: { type: 'star', sides: 4 }
             };
 
             var chart = new google.visualization.LineChart(document.getElementById('linechart'));

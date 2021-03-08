@@ -22,7 +22,7 @@
                     <nav class="sb-sidenav-menu-nested nav">
                         <a class="nav-link" href="{{url('strata')}}">Strata</a>
                         <a class="nav-link" href="{{url('allocation/upload')}}">Upload List</a>
-                        <a class="nav-link" href="#">Generate Sequence</a>
+{{--                        <a class="nav-link" href="#">Generate Sequence</a>--}}
                     </nav>
                 </div>
 

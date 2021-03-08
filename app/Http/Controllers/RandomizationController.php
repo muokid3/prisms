@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\AllocationList;
 use App\Inbox;
+use App\Sent;
 use App\SiteStudy;
 use Carbon\Carbon;
 use Illuminate\Database\QueryException;
@@ -94,16 +95,29 @@ class RandomizationController extends Controller
     }
 
     public function sms() {
-        $sms= Inbox::all();
+
+
+        $smses = Inbox::groupBy('date')
+            ->select(DB::raw('Date(timestamp) as date'), DB::raw('count(*) as total'))
+            ->whereNotNull('timestamp')
+            ->orderBy('date','desc')
+            ->limit(14)
+            ->get();
+
+        $final = [];
+
+        foreach ($smses as $sms){
+            array_push($final, ["date"=>$sms->date, "inbox"=>$sms->total, "outbox"=>Sent::whereDate('delivery_time',$sms->date)->count()]);
+        }
 
         return view('randomization.sms')->with([
-            'sms' => $sms,
-
+            'final' => $final,
         ]);
     }
     public function smsDT() {
         $sms= Inbox::join('sent', 'inbox.id', '=', 'sent.message_id')
-            ->select('inbox.id', 'inbox.text as incoming_text', 'sent.text as outgoing_text','inbox.timestamp as time_in','sent.timestamp as time_out')
+            ->whereNotNull('sent.delivery_time')
+            ->select('inbox.id', 'inbox.text as incoming_text', 'sent.text as outgoing_text','inbox.timestamp as time_in','sent.delivery_time as time_out')
             ->get();
 
         return DataTables::of($sms)

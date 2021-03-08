@@ -1,6 +1,8 @@
 @extends('layouts.app')
 
 @push('js')
+
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
     <script>
 
         $(function() {
@@ -34,7 +36,34 @@
                 "order": [[0, "desc"]]
             });
 
-            // live search
+
+            google.charts.load('current', {'packages':['corechart']});
+            google.charts.setOnLoadCallback(drawSmsOverTimeChart);
+
+            function drawSmsOverTimeChart() {
+
+                var items = [
+                    ['Date', 'Inbox', 'Outbox'],
+                        @foreach ($final as $sms)
+                    [ '{{ $sms['date'] }}', {{ $sms['inbox'] }}, {{ $sms['outbox'] }}],
+                    @endforeach
+                ];
+
+                var data = google.visualization.arrayToDataTable(items);
+
+                var options = {
+                    title: 'Randomization rate per day',
+                    // curveType: 'function',
+                    legend: { position: 'bottom' },
+                    height:300,
+                    pointSize: 15,
+                    pointShape: { type: 'star', sides: 4 }
+                };
+
+                var chart = new google.visualization.LineChart(document.getElementById('linechart'));
+
+                chart.draw(data, options);
+            }
 
 
         });
@@ -43,26 +72,41 @@
 
 @section('content')
     <div class="container-fluid">
-        <h1 class="mt-4">SMS History</h1>
+        <h1 class="mt-4">SMS Log</h1>
         <ol class="breadcrumb mb-4">
             <li class="breadcrumb-item"><a href="{{url('/')}}">Dashboard</a></li>
             <li class="breadcrumb-item active">SMS</li>
         </ol>
         <div class="card mb-4">
             <div class="card-body">
-               View SMS inbox history
+               View SMS log
             </div>
         </div>
         <div class="card mb-4">
             <div class="card-header">
                 <i class="fas fa-table mr-1"></i>
-                Allocation sites
+                SMS Log
             </div>
             <div class="card-body">
 
                 @include('layouts.success')
                 @include('layouts.warnings')
                 @include('layouts.warning')
+
+                <div class="row">
+
+                    <div class="col-lg-12">
+                        <div class="card mb-4">
+                            <div class="card-header">
+                                <i class="fas fa-chart-area mr-1"></i>
+                                SMS activity log over time
+                            </div>
+                            <div id="linechart"></div>
+                            <div class="card-footer small text-muted">Updated now</div>
+                        </div>
+                    </div>
+                </div>
+
 
 
                 <div class="material-datatables">
