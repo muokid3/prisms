@@ -214,7 +214,7 @@
                             <div class="col-md-6">
                                 <div class="form-group">
                                     <label class="control-label" for="date_initiated">Date Initiated</label>
-                                    <input type="text" value="{{ old('date_initiated') }}" class="form-control" id="datepicker"  name="date_initiated" required />
+                                    <input type="text" value="{{ old('date_initiated') }}" class="form-control datepicker" id="datepicker"  name="date_initiated" required />
                                 </div>
                             </div>
 
