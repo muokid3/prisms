@@ -232,7 +232,7 @@
                             <div class="col-md-12">
                                 <div class="form-group">
                                     <label class="control-label" for="email">Email</label>
-                                    <input type="email" value="{{ old('email') }}" class="form-control pb-0 mt-2" name="email" id="email" required/>
+                                    <input type="email" value="{{ old('email') }}" class="form-control pb-0 mt-2" name="email" id="email"/>
                                 </div>
                             </div>
 

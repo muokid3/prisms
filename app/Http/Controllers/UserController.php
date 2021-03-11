@@ -76,7 +76,7 @@ class UserController extends Controller
         $data = request()->validate([
             'user_group' => 'required|max:10',
             'phone_no' => 'required|max:12|unique:users,phone_no',
-            'email' => 'required|email|max:255|unique:users,email',
+            'email' => 'nullable|email|max:255|unique:users,email',
             'title'  => 'required',
             'site'  => 'required',
             'first_name' => 'required',
