@@ -24,7 +24,6 @@ class UsersSeeder extends Seeder
         $user->last_name = 'ADMIN';
         $user->user_group = 1; //super admin
         $user->phone_no = '254713653112';
-        $user->study = "BLAST"; //all
         $user->site_id = 1; //all
         $user->email = "admin@prisms.com";
         $user->password = bcrypt("pass123");
