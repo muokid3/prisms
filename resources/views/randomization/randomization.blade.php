@@ -108,11 +108,7 @@
             <li class="breadcrumb-item"><a href="{{url('/')}}">Dashboard</a></li>
             <li class="breadcrumb-item active">Randomization Log</li>
         </ol>
-        <div class="card mb-4">
-            <div class="card-body">
-               View your randomization log
-            </div>
-        </div>
+
         <div class="card mb-4">
             <div class="card-header">
                 <i class="fas fa-table mr-1"></i>

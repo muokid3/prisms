@@ -111,7 +111,7 @@ class RandomizationController extends Controller
         }
 
         return view('randomization.sms')->with([
-            'final' => $final,
+            'final' => array_reverse($final),
         ]);
     }
     public function smsDT() {
