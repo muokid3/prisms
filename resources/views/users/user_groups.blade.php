@@ -11,7 +11,21 @@
         });
 
 
-        var _ModalTitle = $('#group-modal-title');
+
+        var _ModalTitle = $('#group-modal-title'),
+            _SpoofInput = $('#spoof-input'),
+            _Form = $('#group-form');
+
+        //add
+        $(document).on('click', '.add-btn', function() {
+            _ModalTitle.text('Add');
+            _SpoofInput.val('POST');
+            $('#name').val('');
+            $('#id').val('');
+
+            $('#user-role-modal').modal('show');
+
+        });
 
         // edit   product
         $(document).on('click', '.edit', function() {
@@ -26,6 +40,8 @@
                     dataType: 'json',
                     beforeSend: function() {
                         _ModalTitle.text('Edit');
+                        _SpoofInput.removeAttr('disabled');
+                        _SpoofInput.val('PUT');
                     },
                     success: function(data) {
                         console.log(data);
@@ -33,11 +49,10 @@
                         $('#name').val(data['name']);
                         $('#id').val(data['id']);
 
-                        // set the update url
-                        var action =  'user_groups/update';
+                        var action =  _Form .attr('action');
                         // action = action + '/' + season_id;
                         console.log(action);
-                        seasonForm .attr('action', action);
+                        _Form .attr('action', action);
 
                         // open the modal
                         $('#user-role-modal').modal('show');
@@ -72,7 +87,7 @@
                     </div>
                     <div class="card-body">
                         <div class="toolbar">
-                            <button class="btn btn-primary btn-sm" data-toggle="modal" data-target="#user-role-modal">
+                            <button class="btn btn-primary btn-sm add-btn" >
                                 <i class="fa fa-plus"></i> Add User Group
                             </button>
                         </div>
@@ -145,6 +160,8 @@
 
                     <form action="{{ url('user_groups') }}"  method="post" id="group-form">
                         {{ csrf_field() }}
+                        <input type="hidden" name="_method" id="spoof-input" value="PUT" disabled/>
+
 
                         <div class="form-group mb-4">
                             <label class="control-label" for="name">Group Name</label>

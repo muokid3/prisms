@@ -93,7 +93,7 @@ Route::group(['middleware' => ['auth']], function () {
     Route::get('/user_groups', 'UserController@user_groups');//->middleware('perm:1');
     Route::post('/user_groups', 'UserController@new_user_group');//->middleware('perm:1');
     Route::get('user_groups/{_id}', 'UserController@get_group_details');//->middleware('perm:1');
-    Route::post('user_groups/update', 'UserController@update_group_details');//->middleware('perm:1');
+    Route::put('user_groups', 'UserController@update_group_details');//->middleware('perm:1');
     Route::post('user_groups/delete', 'UserController@delete_group');//->middleware('perm:1');
 
     Route::get('ajax/users/groups/details/{id}', 'UserController@userGroupDetailsDT');//->middleware('perm:1');

@@ -19,6 +19,12 @@
                     {data: 'time_out', name: 'time_out'},
                     {data: 'latency', name: 'latency'},
                 ],
+                dom: 'Blfrtip',
+                buttons:[
+                    {"extend": "copy", "text": "Copy Data", "className": 'btn btn-info btn-xs'},
+                    {"extend": "excel", "text": "Export to Excel", "className": 'btn btn-success btn-sm'},
+                    {"extend": "pdf", "text": "Export to PDF", "className": 'btn btn-default btn-xs'},
+                ],
                 /*columnDefs: [
                     {searchable: false, targets: [5]},
                     {orderable: false, targets: [5]}
@@ -77,11 +83,7 @@
             <li class="breadcrumb-item"><a href="{{url('/')}}">Dashboard</a></li>
             <li class="breadcrumb-item active">SMS</li>
         </ol>
-        <div class="card mb-4">
-            <div class="card-body">
-               View SMS log
-            </div>
-        </div>
+
         <div class="card mb-4">
             <div class="card-header">
                 <i class="fas fa-table mr-1"></i>

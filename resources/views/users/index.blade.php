@@ -41,6 +41,22 @@
                 _SpoofInput = $('#user-spoof-input'),
                 _Form = $('#user-form');
 
+            //add
+            $(document).on('click', '.add-btn', function() {
+                _ModalTitle.text('Add');
+                _SpoofInput.val('POST');
+                $('#title').val('');
+                $('#first_name').val('');
+                $('#last_name').val('');
+                $('#email').val('');
+                $('#phone_no').val('');
+                $("#user_group").val('').change();
+                $("#site").val('').change();
+                $('#id').val('');
+
+                $('#user-modal').modal('show');
+
+            });
             // edit   product
             $(document).on('click', '.edit-user-btn', function() {
                 var _Btn = $(this);
@@ -55,6 +71,7 @@
                         beforeSend: function() {
                             _ModalTitle.text('Edit');
                             _SpoofInput.removeAttr('disabled');
+                            _SpoofInput.val('PUT');
                         },
                         success: function(data) {
                             console.log(data);
@@ -114,7 +131,7 @@
             <div class="card-body">
 
                 <div class="toolbar">
-                    <button class="btn btn-primary btn-sm" data-toggle="modal" data-target="#user-modal">
+                    <button class="btn btn-primary btn-sm add-btn">
                         <i class="fa fa-plus"></i> Add New User
                     </button>
                 </div>

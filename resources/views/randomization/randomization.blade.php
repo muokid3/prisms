@@ -24,6 +24,12 @@
                     {data: 'ipno', name: 'ipno'},
                     {data: 'site', name: 'site'},
                 ],
+                dom: 'Blfrtip',
+                buttons:[
+                    {"extend": "copy", "text": "Copy Data", "className": 'btn btn-info btn-xs'},
+                    {"extend": "excel", "text": "Export to Excel", "className": 'btn btn-success btn-sm'},
+                    {"extend": "pdf", "text": "Export to PDF", "className": 'btn btn-default btn-xs'},
+                ],
                 /*columnDefs: [
                     {searchable: false, targets: [5]},
                     {orderable: false, targets: [5]}

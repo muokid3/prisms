@@ -39,6 +39,16 @@
                 _SpoofInput = $('#user-spoof-input'),
                 _Form = $('#user-form');
 
+            //add
+            $(document).on('click', '.add-site-btn', function() {
+                _ModalTitle.text('Add');
+                _SpoofInput.val('POST');
+                $('#site_name').val('');
+                $('#id').val('');
+
+                $('#user-modal').modal('show');
+
+            });
             // edit   product
             $(document).on('click', '.edit-site-btn', function() {
                 var _Btn = $(this);
@@ -53,6 +63,7 @@
                         beforeSend: function() {
                             _ModalTitle.text('Edit');
                             _SpoofInput.removeAttr('disabled');
+                            _SpoofInput.val('PUT');
                         },
                         success: function(data) {
                             console.log(data);
@@ -106,7 +117,7 @@
             <div class="card-body">
 
                 <div class="toolbar">
-                    <button class="btn btn-primary btn-sm" data-toggle="modal" data-target="#user-modal">
+                    <button class="btn btn-primary btn-sm add-site-btn">
                         <i class="fa fa-plus"></i> Add New Site
                     </button>
                 </div>
