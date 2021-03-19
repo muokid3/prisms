@@ -122,6 +122,14 @@ class RandomizationController extends Controller
 
         return DataTables::of($sms)
 
+            ->addColumn('actual_latency', function ($sms) {
+
+                $from  = Carbon::createFromFormat('Y-m-d H:i:s', $sms->time_in);
+                $to  = Carbon::createFromFormat('Y-m-d H:i:s', $sms->time_out);
+
+                return  $to->diffInSeconds($from);
+            })
+
             ->addColumn('latency', function ($sms) {
 
                 $from  = Carbon::createFromFormat('Y-m-d H:i:s', $sms->time_in);

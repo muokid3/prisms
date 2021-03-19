@@ -39,7 +39,14 @@
                     search: "_INPUT_",
                     searchPlaceholder: "Search SMS",
                 },
-                "order": [[0, "desc"]]
+                "order": [[0, "desc"]],
+                "createdRow": function( row, data, dataIndex ) {
+                    //console.log(data['actual_latency']);
+                    if (data['actual_latency'] >= 30) {
+                        $(row).addClass('bg-danger');
+
+                    }
+                }
             });
 
 
