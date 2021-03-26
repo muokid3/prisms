@@ -10,7 +10,7 @@
             // server side - lazy loading
             $('#random-dt').DataTable({
                 processing: true, // loading icon
-                serverSide: true, // this means the datatable is no longer client side
+                serverSide: false, // this means the datatable is no longer client side
                 ajax: '{{ route('randomization-dt') }}', // the route to be called via ajax
                 columns: [ // datatable columns
                     {data: 'id', name: 'id'},
