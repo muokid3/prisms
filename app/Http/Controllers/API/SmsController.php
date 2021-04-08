@@ -210,7 +210,8 @@ class SmsController extends Controller
 
 
             $result_sms = send_sms("SEARCHTrial",$reply,$source,rand());
-            $data = $result_sms["data"];
+
+            Log::info("RESULT SMS::::".json_encode($result_sms));
 
             $sent = new Sent();
             $sent->timestamp = Carbon::now();
@@ -218,7 +219,7 @@ class SmsController extends Controller
             $sent->text = $reply;
             $sent->status = $result_sms["message"];
             $sent->message_id = $id;
-            $sent->unique_id = $data["uniqueId"];
+            $sent->unique_id = array_key_exists('data', $result_sms) ? $result_sms["data"]["uniqueId"] : null;
             $sent->saveOrFail();
 
         }

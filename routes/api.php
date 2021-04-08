@@ -25,9 +25,9 @@ Route::group([
     'namespace' => 'API'
 ], function() {
 
-    Route::post('sms/receive', 'API\SmsController@receive');
-    Route::post('sms/delivery_report', 'API\SmsController@delivery_report');
-    Route::get('sms/randomise', 'API\SmsController@randomise');
+    Route::post('sms/receive', 'SmsController@receive');
+    Route::post('sms/delivery_report', 'SmsController@delivery_report');
+    Route::get('sms/randomise', 'SmsController@randomise');
 
 
 

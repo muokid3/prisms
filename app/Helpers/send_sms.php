@@ -14,7 +14,12 @@ function send_sms($senderid ,$message,$phone,$orderId){
 
     $token = Config::get('prisms.TOKEN');
 
+//    Log::info("Token:".$token);
+
     $DELIVERY_REPORT = Config::get('prisms.DELIVERY_REPORT');
+
+//    Log::info("DELIVERY_REPORT:".$DELIVERY_REPORT);
+
 
     $headers =  array( "Content-type: application/json", "Accept: application/json", "Authorization: Bearer ". $token );
     $update_request = array( "sender" =>   $senderid,
