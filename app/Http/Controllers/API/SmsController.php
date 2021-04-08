@@ -134,7 +134,6 @@ class SmsController extends Controller
                     $phone_no = $source;
                 }
 
-                //$lookup_users = "SELECT first_name, last_name, study FROM users WHERE active=1 AND phone_no='$phone_no'";
                 $lookup_users = User::where('active',1)->where('phone_no', $phone_no)->first();
 
 
