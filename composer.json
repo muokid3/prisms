@@ -17,7 +17,9 @@
         "laravel/ui": "^2.4",
         "doctrine/dbal": "^2.10",
         "yajra/laravel-datatables-buttons": "^4.6",
-        "yajra/laravel-datatables-oracle": "~9.0"
+        "yajra/laravel-datatables-oracle": "~9.0",
+      "ext-json": "*",
+        "ext-curl": "*"
     },
     "require-dev": {
         "facade/ignition": "^2.0",
@@ -43,6 +45,9 @@
         "classmap": [
             "database/seeds",
             "database/factories"
+        ],
+        "files": [
+            "app/Helpers/send_sms.php"
         ]
     },
     "autoload-dev": {

@@ -14,6 +14,25 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::middleware('auth:api')->get('/user', function (Request $request) {
-    return $request->user();
+//Route::middleware('auth:api')->get('/user', function (Request $request) {
+//    return $request->user();
+//});
+
+Route::group([
+//    'middleware' => [
+//        'auth:api',
+//    ],
+    'namespace' => 'API'
+], function() {
+
+    Route::post('sms/receive', 'API\SmsController@receive');
+    Route::post('sms/delivery_report', 'API\SmsController@delivery_report');
+    Route::get('sms/randomise', 'API\SmsController@randomise');
+
+
+
+
+
 });
+
+
