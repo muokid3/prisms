@@ -193,7 +193,6 @@ class SmsController extends Controller
                     Log::info("RANDOMISATION UPDATE: ".$adm_msg. "\n");
 
                     $result_sms = send_sms("SEARCHTrial",$adm_msg,Config::get('prisms.OPERATOR_SUPERUSER'),rand());
-                    $data = $result_sms["data"];
 
                     $sent = new Sent();
                     $sent->timestamp = Carbon::now();
@@ -201,7 +200,7 @@ class SmsController extends Controller
                     $sent->text = $adm_msg;
                     $sent->status = $result_sms["message"];
                     $sent->message_id = $id;
-                    $sent->unique_id = $data["uniqueId"];
+                    $sent->unique_id = array_key_exists('data', $result_sms) ? $result_sms["data"]["uniqueId"] : null;
                     $sent->saveOrFail();
 
                 }
