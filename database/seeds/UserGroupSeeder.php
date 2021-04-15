@@ -27,6 +27,10 @@ class UserGroupSeeder extends Seeder
         $userGroup->name = 'ADMIN';
         $userGroup->save();
 
+        $userGroup = new \App\UserGroup();
+        $userGroup->name = 'Site Admin';
+        $userGroup->save();
+
 
 
 

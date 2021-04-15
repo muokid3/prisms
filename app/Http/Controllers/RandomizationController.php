@@ -22,11 +22,23 @@ class RandomizationController extends Controller
 
     public function randomization() {
 
-        $allocations = AllocationList::groupBy('allocation')
-            ->select('allocation', DB::raw('count(*) as total'))
-            ->whereNotNull('date_randomised')
-            ->whereNotNull('participant_id')
-            ->get();
+        if (auth()->user()->user_group == 1){
+            $allocations = AllocationList::groupBy('allocation')
+                ->select('allocation', DB::raw('count(*) as total'))
+                ->whereNotNull('date_randomised')
+                ->whereNotNull('participant_id')
+                ->get();
+        }else{
+            $studyIds = SiteStudy::where('site_id', auth()->user()->site_id)->get('study_id');
+
+            $allocations = AllocationList::whereIn('study_id', $studyIds)
+                ->groupBy('allocation')
+                ->select('allocation', DB::raw('count(*) as total'))
+                ->whereNotNull('date_randomised')
+                ->whereNotNull('participant_id')
+                ->get();
+        }
+
 
         $rates = AllocationList::select(DB::raw('Date(date_randomised) as date_randomised'), DB::raw('count(*) as total'))
             ->whereNotNull('date_randomised')
@@ -43,6 +55,54 @@ class RandomizationController extends Controller
 
         ]);
     }
+    public function randomizationFiltered(Request $request) {
+
+        $data = request()->validate([
+            'start_date' => 'required',
+            'end_date' => 'required',
+        ]);
+
+        if (auth()->user()->user_group == 1){
+            $allocations = AllocationList::groupBy('allocation')
+                ->select('allocation', DB::raw('count(*) as total'))
+                ->whereNotNull('date_randomised')
+                ->whereDate('date_randomised', '>=', $request->start_date)
+                ->whereDate('date_randomised', '<=', $request->end_date)
+                ->whereNotNull('participant_id')
+                ->get();
+        }else{
+            $studyIds = SiteStudy::where('site_id', auth()->user()->site_id)->get('study_id');
+
+            $allocations = AllocationList::whereIn('study_id', $studyIds)
+                ->groupBy('allocation')
+                ->select('allocation', DB::raw('count(*) as total'))
+                ->whereNotNull('date_randomised')
+                ->whereDate('date_randomised', '>=', $request->start_date)
+                ->whereDate('date_randomised', '<=', $request->end_date)
+                ->whereNotNull('participant_id')
+                ->get();
+        }
+
+
+        $rates = AllocationList::select(DB::raw('Date(date_randomised) as date_randomised'), DB::raw('count(*) as total'))
+            ->whereNotNull('date_randomised')
+            ->whereNotNull('participant_id')
+            ->whereDate('date_randomised', '>=', $request->start_date)
+            ->whereDate('date_randomised', '<=', $request->end_date)
+            ->groupBy('date_randomised')
+            ->orderBy('date_randomised', 'ASC')
+            ->get();
+
+        //dd($rates);
+
+        return view('randomization.randomization')->with([
+            'allocations' => $allocations,
+            'rates' => $rates,
+            'start_date' => $request->start_date,
+            'end_date' => $request->end_date,
+
+        ]);
+    }
     public function randomizationDT() {
 
         if (auth()->user()->user_group == 1){
@@ -52,7 +112,9 @@ class RandomizationController extends Controller
                 ->get();
         }else{
             //show only mine
-            $studyIds = SiteStudy::where('study_coordinator', auth()->user()->id)->get('study_id');
+            //$studyIds = SiteStudy::where('study_coordinator', auth()->user()->id)->get('study_id');
+            $studyIds = SiteStudy::where('site_id', auth()->user()->site_id)->get('study_id');
+
             $allocation= AllocationList::whereIn('study_id', $studyIds)
                 ->whereNotNull('date_randomised')
                 ->whereNotNull('participant_id')
@@ -112,6 +174,33 @@ class RandomizationController extends Controller
 
         return view('randomization.sms')->with([
             'final' => array_reverse($final),
+        ]);
+    }
+    public function smsFiltered(Request $request) {
+
+        $data = request()->validate([
+            'start_date' => 'required',
+            'end_date' => 'required',
+        ]);
+
+        $smses = Inbox::groupBy('date')
+            ->select(DB::raw('Date(timestamp) as date'), DB::raw('count(*) as total'))
+            ->whereNotNull('timestamp')
+            ->whereDate('timestamp', '>=', $request->start_date)
+            ->whereDate('timestamp', '<=', $request->end_date)
+            ->orderBy('date','desc')
+            ->get();
+
+        $final = [];
+
+        foreach ($smses as $sms){
+            array_push($final, ["date"=>$sms->date, "inbox"=>$sms->total, "outbox"=>Sent::whereDate('delivery_time',$sms->date)->count()]);
+        }
+
+        return view('randomization.sms')->with([
+            'final' => array_reverse($final),
+            'start_date' => $request->start_date,
+            'end_date' => $request->end_date,
         ]);
     }
     public function smsDT() {

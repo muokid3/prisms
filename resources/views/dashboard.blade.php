@@ -73,27 +73,7 @@
                     </div>
                 </div>
             </div>
-            <div class="col-lg-3 col-md-6 col-sm-6 mb-4">
-                <div class="card text-white bg-warning">
-                    <div class="row" style="padding: 0.75rem 1.25rem;" >
-                        <div class="col-sm-6">
-                            <div class="card-icon">
-                                <i class="fas fa-layer-group fa-3x"></i>
-                            </div>
-                            <p class="card-category">Total Strata</p>
-                        </div>
-                        <div class="col-sm-6">
-                            <h3 class="card-title">{{ $sites }}</h3>
 
-                        </div>
-
-                    </div>
-                    <div class="card-footer d-flex align-items-center justify-content-between">
-                        <a class="small text-white stretched-link" href="{{url('strata')}}">View Details</a>
-                        <div class="small text-white"><i class="fas fa-angle-right"></i></div>
-                    </div>
-                </div>
-            </div>
             <div class="col-lg-3 col-md-6 col-sm-6 mb-4">
                 <div class="card text-white bg-success">
                     <div class="row" style="padding: 0.75rem 1.25rem;" >
@@ -116,7 +96,7 @@
                 </div>
             </div>
             <div class="col-lg-3 col-md-6 col-sm-6 mb-4">
-                <div class="card text-white bg-danger">
+                <div class="card text-white bg-warning">
                     <div class="row" style="padding: 0.75rem 1.25rem;" >
                         <div class="col-sm-6">
                             <div class="card-icon">
@@ -132,6 +112,28 @@
                     </div>
                     <div class="card-footer d-flex align-items-center justify-content-between">
                         <a class="small text-white stretched-link" href="{{url('site_studies')}}">View Details</a>
+                        <div class="small text-white"><i class="fas fa-angle-right"></i></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-3 col-md-6 col-sm-6 mb-4">
+                <div class="card text-white bg-danger">
+                    <div class="row" style="padding: 0.75rem 1.25rem;" >
+                        <div class="col-sm-6">
+                            <div class="card-icon">
+                                <i class="fas fa-layer-group fa-3x"></i>
+                            </div>
+                            <p class="card-category">Invalid messages</p>
+                        </div>
+                        <div class="col-sm-6">
+                            <h3 class="card-title">{{ $invalid }}</h3>
+
+                        </div>
+
+                    </div>
+                    <div class="card-footer d-flex align-items-center justify-content-between">
+                        <a class="small text-white stretched-link" href="{{url('sms')}}">View Details</a>
                         <div class="small text-white"><i class="fas fa-angle-right"></i></div>
                     </div>
                 </div>

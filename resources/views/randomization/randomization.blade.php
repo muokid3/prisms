@@ -114,6 +114,7 @@
                 <i class="fas fa-table mr-1"></i>
                 Randomization Log
             </div>
+
             <div class="card-body">
 
                 @include('layouts.success')
@@ -121,6 +122,51 @@
                 @include('layouts.warning')
 
                 <div class="row">
+
+                    <div class="col-lg-6 offset-6">
+                        <form id="userform" action="{{ url('randomization') }}" method="post" id="user-form" enctype="multipart/form-data">
+                        {{ csrf_field() }}
+                        {{--                        spoofing--}}
+                        <input type="hidden" name="_method" id="user-spoof-input" value="PUT" disabled/>
+
+                        <div class="row">
+
+                            <div class="col-md-5">
+                                <div class="row mb-3">
+                                    <label class="col-sm-5 col-form-label" for="start_date">Start Date</label>
+
+                                    <div class="col-sm-7">
+                                        <input type="text" value="{{ empty($start_date) ? '' : $start_date }}" class="form-control datepicker" id="datepicker"  name="start_date" required />
+                                    </div>
+                                </div>
+                            </div>
+
+
+                            <div class="col-md-5">
+                                <div class="row mb-3">
+                                    <label class="col-sm-5 col-form-label" for="end_date">End Date</label>
+
+                                    <div class="col-sm-7">
+                                        <input type="text" value="{{ empty($end_date) ? '' : $end_date }}" class="form-control datepicker" id="datepicker"  name="end_date" required />
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-md-2">
+                                <div class="form-group">
+                                    <button class="btn btn-success" id="save-brand"><i class="fa fa-save"></i> Filter</button>
+                                </div>
+                            </div>
+
+
+                        </div>
+
+
+                        <input type="hidden" name="id" id="id"/>
+
+                    </form>
+                    </div>
+
                     <div class="col-lg-6">
                         <div class="card mb-4">
                             <div class="card-header">

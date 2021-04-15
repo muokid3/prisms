@@ -28,6 +28,10 @@ function send_sms($senderid ,$message,$phone,$orderId){
         "correlator" => $orderId ,
         "endpoint"=>$DELIVERY_REPORT);
 
+    Log::info("Sending SMS payload:::::::");
+    Log::info(json_decode(json_encode($update_request),true));
+
+
     //$headers = json_encode($headers);
     //echo $headers; exit;
 
@@ -68,6 +72,8 @@ function send_sms($senderid ,$message,$phone,$orderId){
 
     // convert response back to json
     $result_sms = json_decode($response, true);
+
+    Log::info("Bongatech Response:::::::");
 
     Log::info($result_sms);
 

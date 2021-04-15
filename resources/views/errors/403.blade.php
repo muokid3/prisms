@@ -102,10 +102,9 @@
                                     <div class="col-lg-6">
                                         <div class="text-center mt-4">
 {{--                                            <img class="mb-4 img-error" src="{{url('assets/img/error-404-monochrome.svg')}}" />--}}
-                                            <h1>404 - Not Found!</h1>
+                                            <h1>403 - Access Denied!</h1>
                                             <h5>{{ $exception->getMessage() }}</h5>
 
-                                            <h5 class="lead">This requested URL was not found on this server.</h5>
                                             <a href="{{url('/')}}">
                                                 <i class="fas fa-arrow-left mr-1"></i>
                                                 Return to Dashboard

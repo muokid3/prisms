@@ -23,12 +23,13 @@ class PermissionsSeeder extends Seeder
         $permission->save();
 
         $permission = new \App\Permission();
-        $permission->name = 'Upload a sequence';  //2
+        $permission->name = 'Manage Strata';  //2
         $permission->save();
 
         $permission = new \App\Permission();
-        $permission->name = 'Generate a sequence'; //3
+        $permission->name = 'Manage allocation lists';  //3
         $permission->save();
+
 
         $permission = new \App\Permission();
         $permission->name = 'Randomization Log'; //4
@@ -45,6 +46,10 @@ class PermissionsSeeder extends Seeder
 
         $permission = new \App\Permission();
         $permission->name = 'Manage Sites'; //7
+        $permission->save();
+
+        $permission = new \App\Permission();
+        $permission->name = 'Manage site studies'; //8
         $permission->save();
 
 
