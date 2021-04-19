@@ -18,8 +18,9 @@
         "doctrine/dbal": "^2.10",
         "yajra/laravel-datatables-buttons": "^4.6",
         "yajra/laravel-datatables-oracle": "~9.0",
-      "ext-json": "*",
-        "ext-curl": "*"
+        "ext-json": "*",
+        "ext-curl": "*",
+        "laravel/passport": "^7.4"
     },
     "require-dev": {
         "facade/ignition": "^2.0",
