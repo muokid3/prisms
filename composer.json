@@ -20,7 +20,7 @@
         "yajra/laravel-datatables-oracle": "~9.0",
         "ext-json": "*",
         "ext-curl": "*",
-        "laravel/passport": "^7.4"
+        "laravel/passport": "~9.0"
     },
     "require-dev": {
         "facade/ignition": "^2.0",

@@ -19,9 +19,6 @@ use Illuminate\Support\Facades\Route;
 //});
 
 Route::group([
-//    'middleware' => [
-//        'auth:api',
-//    ],
     'namespace' => 'API'
 ], function() {
 
@@ -30,9 +27,37 @@ Route::group([
     Route::get('sms/randomise', 'SmsController@randomise');
 
 
+});
+
+Route::group([
+    'prefix' => 'auth',
+    'namespace' => 'API'
+], function () {
+    Route::post('login', 'AuthController@login');
+
+//    Route::post('send_reset_otp', 'AuthController@send_reset_otp');
+//    Route::post('verify_otp', 'AuthController@verify_otp');
+//    Route::post('reset_pin', 'AuthController@reset_pin');
+});
+
+Route::group([
+    'middleware' => [
+        'auth:api',
+    ],
+    'namespace' => 'API'
+], function() {
+    Route::get('auth/logout', 'AuthController@logout');
+    Route::get('auth/user', 'AuthController@user');
+
+
+
+
 
 
 
 });
+
+
+
 
 
