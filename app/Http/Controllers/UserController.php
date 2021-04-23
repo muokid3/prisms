@@ -106,8 +106,7 @@ class UserController extends Controller
 
             //$user->notify(new UserCreated($pass));
 
-            $message = 'Your account on PRISMS has been created as a '.$user->role->name.' for your organisation.
-             Use your email as your username. Your password is '.$pass.' Link: https://prisms.kemri-wellcome.org/';
+            $message = 'Your account on PRISMS has been created as a '.$user->role->name.' for your organisation. Use your email as your username. Your password is '.$pass.' Link: https://prisms.kemri-wellcome.org/';
 
             send_sms("SEARCHTrial",$message,$user->phone_no,$user->id);
 

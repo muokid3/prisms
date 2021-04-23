@@ -49,6 +49,26 @@ Route::group([
     Route::get('auth/logout', 'AuthController@logout');
     Route::get('auth/user', 'AuthController@user');
 
+    //sites
+    Route::get('sites', 'ApiController@get_sites');
+    Route::post('sites', 'ApiController@create_site');
+    Route::get('sites/delete/{id}', 'ApiController@delete_site');
+    Route::post('sites/update', 'ApiController@update_site');
+
+
+    //studies
+    Route::get('studies', 'ApiController@get_studies');
+    Route::post('studies', 'ApiController@create_study');
+    Route::get('studies/delete/{id}', 'ApiController@delete_study');
+    Route::post('studies/update', 'ApiController@update_study');
+
+    //strata
+    Route::get('strata', 'ApiController@get_strata');
+    Route::post('stratum', 'ApiController@create_stratum');
+    Route::get('stratum/delete/{id}', 'ApiController@delete_stratum');
+    Route::post('stratum/update', 'ApiController@update_stratum');
+
+
 
 
 
