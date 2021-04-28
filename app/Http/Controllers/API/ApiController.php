@@ -5,6 +5,7 @@ namespace App\Http\Controllers\API;
 use App\AllocationList;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\GenericCollection;
+use App\Inbox;
 use App\Site;
 use App\Stratum;
 use App\Study;
@@ -232,5 +233,14 @@ class ApiController extends Controller
     //end of strata
 
 
+    //sms
+    public function get_sms()
+    {
+//        return new GenericCollection(Inbox::orderBy('id', 'asc')->get());
+        return new GenericCollection(Inbox::orderBy('id', 'desc')->paginate(15));
+    }
+
+
+    //end of sms
 
 }
