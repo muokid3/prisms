@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Resources\GenericCollection;
 use App\Inbox;
 use App\Site;
+use App\SiteStudy;
 use App\Stratum;
 use App\Study;
 use Illuminate\Database\Eloquent\Model;
@@ -157,6 +158,19 @@ class ApiController extends Controller
         }
 
     }
+
+    public function get_my_studies()
+    {
+        if (auth()->user()->user_group == 1){
+            $siteStudies = SiteStudy::orderBy('id', 'desc')->get();
+
+        }else {
+            $siteStudies = SiteStudy::where('study_coordinator', auth()->user()->id)->orderBy('id', 'desc')->get();
+        }
+
+        return new GenericCollection($siteStudies);
+    }
+
     //end of studies
 
 

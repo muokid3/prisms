@@ -61,6 +61,8 @@ Route::group([
     Route::post('studies', 'ApiController@create_study');
     Route::get('studies/delete/{id}', 'ApiController@delete_study');
     Route::post('studies/update', 'ApiController@update_study');
+    Route::get('my_studies', 'ApiController@get_my_studies');
+
 
     //strata
     Route::get('strata', 'ApiController@get_strata');
