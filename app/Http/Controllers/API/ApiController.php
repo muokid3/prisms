@@ -11,6 +11,7 @@ use App\Site;
 use App\SiteStudy;
 use App\Stratum;
 use App\Study;
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
@@ -266,12 +267,12 @@ class ApiController extends Controller
         $final = [];
 
         foreach ($smses as $sms){
-            array_push($final, ["date"=>$sms->date, "inbox"=>$sms->total, "outbox"=>Sent::whereDate('delivery_time',$sms->date)->count()]);
+            array_push($final, ["date"=>Carbon::parse($sms->date)->isoFormat('MMM Do YY'), "inbox"=>$sms->total, "outbox"=>Sent::whereDate('delivery_time',$sms->date)->count()]);
         }
 
         return response()->json([
             'success' => true,
-            'data' => $final
+            'data' => array_reverse($final)
         ], 200);
     }
 
