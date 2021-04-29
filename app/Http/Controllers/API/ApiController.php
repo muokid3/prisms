@@ -304,9 +304,14 @@ class ApiController extends Controller
             ->limit(14)
             ->get();
 
+        $final = [];
+        foreach ($rates as $rate){
+            array_push($final, ["date_randomised"=>Carbon::parse($rate->date_randomised)->isoFormat('MMM Do YY'), "total"=>$rate->total]);
+        }
+
         return response()->json([
             'success' => true,
-            'data' => $rates
+            'data' => $final
         ], 200);
     }
     //end of study allocation
