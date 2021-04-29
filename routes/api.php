@@ -72,6 +72,7 @@ Route::group([
 
     //sms
     Route::get('sms', 'ApiController@get_sms');
+    Route::get('sms/graph', 'ApiController@get_sms_graph');
 
 
 

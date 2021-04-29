@@ -20,11 +20,11 @@ class Inbox extends Model
         if (is_null($this->outbox)){
             $latency = "Undefined";
         }else{
-            $from  = Carbon::createFromFormat('Y-m-d H:i:s', $this->timestamp);
-            if (is_null($this->outbox->delivery_time)){
+            if (is_null($this->outbox->delivery_time) || is_null($this->timestamp)){
                 $latency = "Undefined";
             }else{
                 $to  = Carbon::createFromFormat('Y-m-d H:i:s', $this->outbox->delivery_time);
+                $from  = Carbon::createFromFormat('Y-m-d H:i:s', $this->timestamp);
 
                 $latency =$to->diffForHumans($from);
             }

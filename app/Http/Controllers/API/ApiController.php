@@ -6,6 +6,7 @@ use App\AllocationList;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\GenericCollection;
 use App\Inbox;
+use App\Sent;
 use App\Site;
 use App\SiteStudy;
 use App\Stratum;
@@ -14,6 +15,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\ResourceCollection;
+use Illuminate\Support\Facades\DB;
 
 class ApiController extends Controller
 {
@@ -250,8 +252,27 @@ class ApiController extends Controller
     //sms
     public function get_sms()
     {
-//        return new GenericCollection(Inbox::orderBy('id', 'asc')->get());
         return new GenericCollection(Inbox::orderBy('id', 'desc')->paginate(15));
+    }
+    public function get_sms_graph()
+    {
+        $smses = Inbox::groupBy('date')
+            ->select(DB::raw('Date(timestamp) as date'), DB::raw('count(*) as total'))
+            ->whereNotNull('timestamp')
+            ->orderBy('date','desc')
+            ->limit(14)
+            ->get();
+
+        $final = [];
+
+        foreach ($smses as $sms){
+            array_push($final, ["date"=>$sms->date, "inbox"=>$sms->total, "outbox"=>Sent::whereDate('delivery_time',$sms->date)->count()]);
+        }
+
+        return response()->json([
+            'success' => true,
+            'data' => $final
+        ], 200);
     }
 
 
