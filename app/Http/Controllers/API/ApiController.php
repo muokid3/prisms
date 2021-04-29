@@ -294,6 +294,21 @@ class ApiController extends Controller
             'data' => $allocations
         ], 200);
     }
+    public function randomization_rate()
+    {
+        $rates = AllocationList::select(DB::raw('Date(date_randomised) as date_randomised'), DB::raw('count(*) as total'))
+            ->whereNotNull('date_randomised')
+            ->whereNotNull('participant_id')
+            ->groupBy('date_randomised')
+            ->orderBy('date_randomised', 'ASC')
+            ->limit(14)
+            ->get();
+
+        return response()->json([
+            'success' => true,
+            'data' => $rates
+        ], 200);
+    }
     //end of study allocation
 
 }
