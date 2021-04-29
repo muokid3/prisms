@@ -276,7 +276,24 @@ class ApiController extends Controller
         ], 200);
     }
 
-
     //end of sms
+
+
+    //study allocation
+    public function get_study_allocation($studyId)
+    {
+        $allocations = AllocationList::where('study_id', $studyId)
+            ->groupBy('allocation')
+            ->select('allocation', DB::raw('count(*) as total'))
+            ->whereNotNull('date_randomised')
+            ->whereNotNull('participant_id')
+            ->get();
+
+        return response()->json([
+            'success' => true,
+            'data' => $allocations
+        ], 200);
+    }
+    //end of study allocation
 
 }
