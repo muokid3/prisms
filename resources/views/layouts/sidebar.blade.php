@@ -75,6 +75,15 @@
 
                 @endif
 
+                @if(auth()->user()->role->has_perm([9]))
+                    <div class="sb-sidenav-menu-heading">Mailing</div>
+
+                    <a class="nav-link" href="{{url('mails/bulk')}}">
+                        <div class="sb-nav-link-icon"><i class="fas fa-mail-bulk"></i></div>
+                        Bulk E-Mail
+                    </a>
+                @endif
+
                 @if(auth()->user()->role->has_perm([1]))
                     <div class="sb-sidenav-menu-heading">Users</div>
                     <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseUsers" aria-expanded="false" aria-controls="collapseUsers">

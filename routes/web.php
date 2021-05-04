@@ -80,7 +80,10 @@ Route::group(['middleware' => ['auth']], function () {
     Route::post('/sms', 'RandomizationController@smsFiltered')->middleware('perm:5');
     Route::get('ajax/sms', 'RandomizationController@smsDT')->name('sms-dt')->middleware('perm:5');
 
-
+    //mails
+    Route::get('/mails/bulk', 'MailController@bulk_mails')->middleware('perm:9');
+    Route::post('/mails/bulk', 'MailController@create_bulk_mail')->middleware('perm:9');
+    Route::get('ajax/mails/bulk', 'MailController@bulkMailsDT')->name('bulk-mails-dt')->middleware('perm:9');
 
     Route::group(['middleware' => ['perm:1']], function () {
 

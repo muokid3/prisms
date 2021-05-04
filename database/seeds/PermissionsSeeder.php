@@ -52,6 +52,14 @@ class PermissionsSeeder extends Seeder
         $permission->name = 'Manage site studies'; //8
         $permission->save();
 
+        $permission = new \App\Permission();
+        $permission->name = 'Send Mails'; //9
+        $permission->save();
+
+        $permission = new \App\Permission();
+        $permission->name = 'Allocate treatment'; //10
+        $permission->save();
+
 
 
 
