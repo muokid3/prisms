@@ -8,6 +8,7 @@ use App\Inbox;
 use App\Sent;
 use App\User;
 use Carbon\Carbon;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Log;
@@ -95,6 +96,13 @@ class SmsController extends Controller
 
             Log::info("A message from " . $source . " was updated successfully stored: Processing at " .Carbon::now());
 
+            $user = User::where('phone_no',$source)->first();
+
+//            if (is_null($user)){
+//                $reply = "The number " . $source . " does not belong to an active user who is authorised to randomise participants study on PRISMS. Contact " . Config::get('prisms.OPERATOR_SUPERUSER') . "for more details";
+//            }else{
+//            }
+
             $message = array_values(array_filter(explode(" ", $text)));
             print_r($message);
             echo sizeof($message);
@@ -138,50 +146,72 @@ class SmsController extends Controller
 
 
                 if ($lookup_users->count() > 0) {
-                    $select_ipnos = AllocationList::where('ipno',$ipno)->where('study',$study)->first();
 
+                    if ($lookup_users->role->has_perm([10])){
+                        //user has randomising permissions
+                        $select_ipnos = AllocationList::where('ipno',$ipno)->where('study',$study)->first();
 
-                    if (!is_null($select_ipnos)) {
-                        $reply = "The participant with the ipno " . $ipno . " is already allocated " . $select_ipnos->allocation . " by " .
-                            optional($select_ipnos->staff)->first_name.' '. optional($select_ipnos->staff)->last_name . " at " . $select_ipnos->date_randomised;
+                        if (!is_null($select_ipnos)) {
+                            $reply = "The participant with the ipno " . $ipno . " is already allocated " . $select_ipnos->allocation . " by " .
+                                optional($select_ipnos->staff)->first_name.' '. optional($select_ipnos->staff)->last_name . " at " . $select_ipnos->date_randomised;
 
-                        Log::info("RANDOMISATION ATTEMPT TO REALLOCATE: ".$reply. "\n");
-
-                    } else {
-                        //randomising
-                        $alloc_seq = AllocationList::selectRaw(" MIN(sequence) AS next_sequence")
-                            ->whereNull('date_randomised')
-                            ->where('study',$study)
-                            ->first();
-
-                        $next_sequence = $alloc_seq->next_sequence;
-
-                        if (is_null($alloc_seq)) {
-                            $reply = "Random allocations to the " . $study . " study are no longer available. Please contact the study co-ordination centre.";
-
-                            Log::info("RANDOMIZATION ALLOCATION LIST NOT AVAILABLE: ".$reply. "\n");
+                            Log::info("RANDOMISATION ATTEMPT TO REALLOCATE: ".$reply. "\n");
 
                         } else {
-                            $lookup_allocation = AllocationList::where('sequence',$next_sequence)
+                            //randomising
+                            $alloc_seq = AllocationList::selectRaw(" MIN(sequence) AS next_sequence")
                                 ->whereNull('date_randomised')
                                 ->where('study',$study)
                                 ->first();
 
-                            $next_allocation = $lookup_allocation->allocation;
+                            $next_sequence = $alloc_seq->next_sequence;
 
-                            $participant_id = 'BLA' . mt_rand(100, 999);
+                            if (is_null($alloc_seq)) {
+                                $reply = "Random allocations to the " . $study . " study are no longer available. Please contact the study co-ordination centre.";
 
-                            $lookup_allocation->participant_id = $participant_id;
-                            $lookup_allocation->ipno = $ipno;
-                            $lookup_allocation->user_id = $lookup_users->id;
-                            $lookup_allocation->date_randomised = Carbon::now();
+                                Log::info("RANDOMIZATION ALLOCATION LIST NOT AVAILABLE: ".$reply. "\n");
+
+                            } else {
+                                $lookup_allocation = AllocationList::where('sequence',$next_sequence)
+                                    ->whereNull('date_randomised')
+                                    ->where('study',$study)
+                                    ->first();
+
+                                $next_allocation = $lookup_allocation->allocation;
+
+                                $participant_id = 'BLA' . mt_rand(100, 999);
+
+                                $lookup_allocation->participant_id = $participant_id;
+                                $lookup_allocation->ipno = $ipno;
+                                $lookup_allocation->user_id = $lookup_users->id;
+                                $lookup_allocation->date_randomised = Carbon::now();
 
 
-                            $reply = "Participant " . $ipno . " has been randomised to " . $next_allocation . " in the " . $study . " study. The unique number for the participant is " .
-                                $participant_id . " . Randomised by " . $lookup_users->first_name.' '.$lookup_users->last_name . " at " . Carbon::now() . "." . "\r\n" . "#" . $next_sequence;
+                                $reply = "Participant " . $ipno . " has been randomised to " . $next_allocation . " in the " . $study . " study. The unique number for the participant is " .
+                                    $participant_id . " . Randomised by " . $lookup_users->first_name.' '.$lookup_users->last_name . " at " . Carbon::now() . "." . "\r\n" . "#" . $next_sequence;
 
-                            Log::info("SUCCESSFUL RANDOMIZATION: ".$reply. "\n");
+                                Log::info("SUCCESSFUL RANDOMIZATION: ".$reply. "\n");
+                            }
                         }
+
+                    }else{
+                        //user DOES NOT have randomising permissions
+                        $reply = "You do nt have the permissions to randomise participants study at " . strtoupper($site) . ". Contact " . Config::get('prisms.OPERATOR_SUPERUSER') . "for more details";
+                        $adm_msg = "The number " . $source . " tried randomising participants at " . strtoupper($site) . ". The user does not have permissions";
+
+                        Log::info("RANDOMISATION UPDATE: ".$adm_msg. "\n");
+
+                        $result_sms = send_sms("SEARCHTrial",$adm_msg,Config::get('prisms.OPERATOR_SUPERUSER'),rand());
+
+                        $sent = new Sent();
+                        $sent->timestamp = Carbon::now();
+                        $sent->destination = $superuser;
+                        $sent->text = $adm_msg;
+                        $sent->status = $result_sms["message"];
+                        $sent->message_id = $id;
+                        $sent->unique_id = array_key_exists('data', $result_sms) ? $result_sms["data"]["uniqueId"] : null;
+                        $sent->saveOrFail();
+
                     }
 
 
@@ -206,6 +236,7 @@ class SmsController extends Controller
                 }
 
             }
+
 
 
             $result_sms = send_sms("SEARCHTrial",$reply,$source,rand());
