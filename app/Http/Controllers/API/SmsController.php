@@ -204,7 +204,7 @@ class SmsController extends Controller
 
                     }else{
                         //user DOES NOT have randomising permissions
-                        $reply = "You do nt have the permissions to randomise participants study at " . strtoupper($site) . ". Contact " . Config::get('prisms.OPERATOR_SUPERUSER') . "for more details";
+                        $reply = "You do not have the permissions to randomise participants study at " . strtoupper($site) . ". Contact " . Config::get('prisms.OPERATOR_SUPERUSER') . "for more details";
                         $adm_msg = "The number " . $source . " tried randomising participants at " . strtoupper($site) . ". The user does not have permissions";
 
                         Log::info("RANDOMISATION UPDATE: ".$adm_msg. "\n");
