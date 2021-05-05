@@ -66,7 +66,7 @@ class SmsController extends Controller
         $deliveryStatus = $request->deliveryStatus ;
         $deliveryTime = $request->deliveryTime ;
 
-        Log::info("Received elivery report: ".json_encode($request->all()));
+        Log::info("Received delivery report: ".json_encode($request->all()));
 
         $sent = Sent::where('unique_id', $unique_id)->first();
 
