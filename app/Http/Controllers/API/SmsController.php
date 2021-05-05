@@ -11,6 +11,7 @@ use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Config;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 
 class SmsController extends Controller
@@ -148,7 +149,13 @@ class SmsController extends Controller
 
                 if ($lookup_users->count() > 0) {
 
-                    if ($lookup_users->role->has_perm([10])){
+                    $available = DB::table('user_permissions')
+                        ->select('id')
+                        ->where('group_id', '=', $lookup_users->user_group)
+                        ->whereIn('permission_id', [10])
+                        ->get();
+
+                    if (count($available) > 0 || $lookup_users->user_group ==1 ){
                         //user has randomising permissions
                         $select_ipnos = AllocationList::where('ipno',$ipno)->where('study',$study)->first();
 
