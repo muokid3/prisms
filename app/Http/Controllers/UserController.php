@@ -104,7 +104,7 @@ class UserController extends Controller
             $user->saveOrFail();
             Session::flash("success", "User has been created");
 
-            //$user->notify(new UserCreated($pass));
+            $user->notify(new UserCreated($pass));
 
             $message = 'Your account on PRISMS has been created as a '.$user->role->name.' for your organisation. Use your email as your username. Your password is '.$pass.' Link: https://prisms.kemri-wellcome.org/';
 
