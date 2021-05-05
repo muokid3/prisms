@@ -199,6 +199,7 @@ class SmsController extends Controller
                                 $lookup_allocation->ipno = $ipno;
                                 $lookup_allocation->user_id = $lookup_users->id;
                                 $lookup_allocation->date_randomised = Carbon::now();
+                                $lookup_allocation->update();
 
 
                                 $reply = "Participant " . $ipno . " has been randomised to " . $next_allocation . " in the " . $study . " study. The unique number for the participant is " .
