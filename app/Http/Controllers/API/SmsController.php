@@ -6,6 +6,7 @@ use App\AllocationList;
 use App\Http\Controllers\Controller;
 use App\Inbox;
 use App\Sent;
+use App\Study;
 use App\User;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
@@ -157,7 +158,12 @@ class SmsController extends Controller
 
                     if (count($available) > 0 || $lookup_users->user_group ==1 ){
                         //user has randomising permissions
-                        $select_ipnos = AllocationList::where('ipno',$ipno)->where('study',$study)->first();
+
+                        $st = Study::where('study',$study)->first();
+
+                        $stId = is_null($st) ? 0 : $st->id;
+
+                        $select_ipnos = AllocationList::where('ipno',$ipno)->where('study_id',$stId)->first();
 
                         if (!is_null($select_ipnos)) {
                             $reply = "The participant with the ipno " . $ipno . " is already allocated " . $select_ipnos->allocation . " by " .
@@ -169,7 +175,7 @@ class SmsController extends Controller
                             //randomising
                             $alloc_seq = AllocationList::selectRaw(" MIN(sequence) AS next_sequence")
                                 ->whereNull('date_randomised')
-                                ->where('study',$study)
+                                ->where('study_id',$stId)
                                 ->first();
 
                             $next_sequence = $alloc_seq->next_sequence;
@@ -182,7 +188,7 @@ class SmsController extends Controller
                             } else {
                                 $lookup_allocation = AllocationList::where('sequence',$next_sequence)
                                     ->whereNull('date_randomised')
-                                    ->where('study',$study)
+                                    ->where('study_id',$stId)
                                     ->first();
 
                                 $next_allocation = $lookup_allocation->allocation;
