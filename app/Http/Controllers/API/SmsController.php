@@ -44,6 +44,7 @@ class SmsController extends Controller
         $inbox->text = $short_message;
         $inbox->short_code = $short_code;
         $inbox->status = $status;
+        $inbox->saveOrFail();
 
         Log::info("Request successfully stored for the phone number: ".$phone." at ".Carbon::now());
 
