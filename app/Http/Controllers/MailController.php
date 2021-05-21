@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\AuditTrail;
 use App\BulkMail;
 use App\Mail;
 use App\User;
@@ -95,6 +96,10 @@ class MailController extends Controller
 
             }
 
+            AuditTrail::create([
+                'created_by' => auth()->user()->id,
+                'action' => 'Sent bulk mail ('.$request->subject.') to '.optional(UserGroup::find($request->user_group))->name,
+            ]);
 
             request()->session()->flash('success', 'E-mails to target group have been scheduled successfully');
         });

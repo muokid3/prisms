@@ -60,6 +60,10 @@ class PermissionsSeeder extends Seeder
         $permission->name = 'Allocate treatment'; //10
         $permission->save();
 
+        $permission = new \App\Permission();
+        $permission->name = 'View audit logs'; //11
+        $permission->save();
+
 
 
 

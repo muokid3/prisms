@@ -85,6 +85,11 @@ Route::group(['middleware' => ['auth']], function () {
     Route::post('/mails/bulk', 'MailController@create_bulk_mail')->middleware('perm:9');
     Route::get('ajax/mails/bulk', 'MailController@bulkMailsDT')->name('bulk-mails-dt')->middleware('perm:9');
 
+    //audit logs
+    Route::get('/audit_logs', 'UserController@audit_logs')->middleware('perm:11');
+    Route::get('ajax/audit_logs', 'UserController@auditLogsDT')->name('audit-logs-dt')->middleware('perm:11');
+
+
     Route::group(['middleware' => ['perm:1']], function () {
 
         //USERS

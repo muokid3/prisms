@@ -2,12 +2,15 @@
 
 namespace App\Http\Controllers;
 
+use App\AuditTrail;
 use App\Notifications\UserCreated;
+use App\Permission;
 use App\Study;
 use App\User;
 use App\UserGroup;
 use App\UserPermission;
 
+use Carbon\Carbon;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -99,7 +102,7 @@ class UserController extends Controller
 
         $pass = $this->random_pass;
 
-        DB::transaction(function() use ($user, $pass) {
+        DB::transaction(function() use ($user, $pass, $request) {
 
             $user->saveOrFail();
             Session::flash("success", "User has been created");
@@ -108,6 +111,10 @@ class UserController extends Controller
 
             $message = 'Your account on PRISMS has been created as a '.$user->role->name.' for your organisation. Use your email as your username. Your password is '.$pass.' Link: https://prisms.kemri-wellcome.org/';
 
+            AuditTrail::create([
+                'created_by' => auth()->user()->id,
+                'action' => 'Created new user ('.$request->first_name.' '.$request->last_name.')',
+            ]);
             send_sms("SEARCHTrial",$message,$user->phone_no,$user->id);
 
 
@@ -149,6 +156,11 @@ class UserController extends Controller
         $user->site_id = $request->site;
         $user->update();
 
+        AuditTrail::create([
+            'created_by' => auth()->user()->id,
+            'action' => 'Updated user details for user #'.$request->id.' ('.$request->first_name.' '.$request->last_name.')',
+        ]);
+
         request()->session()->flash('success', 'User has been updated.');
         return redirect()->back();
     }
@@ -156,6 +168,12 @@ class UserController extends Controller
     public function delete_user($id)
     {
         try {
+
+            AuditTrail::create([
+                'created_by' => auth()->user()->id,
+                'action' => 'Deleted user #'.$id.'  ('.optional(User::find($id))->first_name.' '.optional(User::find($id))->last_name.')',
+            ]);
+
             User::destroy($id);
 
             request()->session()->flash('success', 'User has been deleted.');
@@ -323,6 +341,11 @@ class UserController extends Controller
         $user_group->name = $request->name;
         $user_group->saveOrFail();
 
+        AuditTrail::create([
+            'created_by' => auth()->user()->id,
+            'action' => 'Created new group ('.$request->name.')',
+        ]);
+
 
         Session::flash("success", "Group has been created");
 
@@ -349,6 +372,10 @@ class UserController extends Controller
         $user_group->name = $request->name;
         $user_group->update();
 
+        AuditTrail::create([
+            'created_by' => auth()->user()->id,
+            'action' => 'Created user group #'.$request->id.' ('.$request->name.')',
+        ]);
 
         Session::flash("success", "Group has been updated");
 
@@ -363,8 +390,13 @@ class UserController extends Controller
             'id' => 'required|exists:user_groups,id',
         ]);
 
-
         $user_group = UserGroup::find($request->id);
+
+        AuditTrail::create([
+            'created_by' => auth()->user()->id,
+            'action' => 'Deleted user group #'.$request->id.' ('.$user_group->name.')',
+        ]);
+
         $user_group->delete();
 
 
@@ -436,7 +468,14 @@ class UserController extends Controller
             $userPermission->group_id = $request->group_id;
             $userPermission->permission_id = $perm;
             $userPermission->saveOrFail();
+
+            AuditTrail::create([
+                'created_by' => auth()->user()->id,
+                'action' => 'Attached permission ('.Permission::find($perm)->name.') to group: '.UserGroup::find($request->group_id)->name,
+            ]);
         }
+
+
 
         request()->session()->flash('success', 'Permissions added successfully');
 
@@ -445,9 +484,35 @@ class UserController extends Controller
     public function delete_group_permission($group_id)
     {
         $userPermission = UserPermission::find($group_id);
+
+        AuditTrail::create([
+            'created_by' => auth()->user()->id,
+            'action' => 'Removed permission ('.Permission::find($userPermission->permission_id)->name.') from group: '.UserGroup::find($userPermission->group_id)->name,
+        ]);
+
         if ($data = $userPermission->delete()) {
             request()->session()->flash("success", "Permission deleted successfully.");
         }
         return redirect()->back();
+    }
+
+
+    public function audit_logs() {
+
+        return view('users.audit_logs')->with([
+
+        ]);
+    }
+    public function auditLogsDT() {
+        $auditLogs = AuditTrail::all();
+        return DataTables::of($auditLogs)
+            ->editColumn('created_at', function ($auditLogs) {
+                return Carbon::parse($auditLogs->created_at)->isoFormat('MMM Do YYYY H:m:s');
+            })
+            ->editColumn('created_by', function ($auditLogs) {
+                return optional($auditLogs->creator)->first_name.' '.optional($auditLogs->creator)->last_name;
+            })
+            ->make(true);
+
     }
 }

@@ -2,9 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\AuditTrail;
 use App\Site;
 use App\SiteStudy;
 use App\Study;
+use App\User;
 use Carbon\Carbon;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
@@ -56,6 +58,8 @@ class SitesController extends Controller
             ->make(true);
 
     }
+
+
     public function edit_study($id)
     {
         $study = Study::find($id);
@@ -77,12 +81,22 @@ class SitesController extends Controller
         $study->study_detail = $request->detail;
         $study->update();
 
+        AuditTrail::create([
+            'created_by' => auth()->user()->id,
+            'action' => 'Edited study #'.$study->id.' to "'.$request->name.'"',
+        ]);
+
         request()->session()->flash('success', 'Study has been updated.');
         return redirect()->back();
     }
     public function delete_study($id)
     {
         try {
+
+            AuditTrail::create([
+                'created_by' => auth()->user()->id,
+                'action' => 'Deleted study #'.$id.' ('.Study::find($id)->study.')',
+            ]);
             Study::destroy($id);
 
             request()->session()->flash('success', 'Study has been deleted.');
@@ -105,6 +119,11 @@ class SitesController extends Controller
             $study->study = $request->name;
             $study->study_detail = $request->detail;
             $study->saveOrFail();
+
+            AuditTrail::create([
+                'created_by' => auth()->user()->id,
+                'action' => 'Created new study ('.$request->name.')',
+            ]);
             request()->session()->flash('success', 'Study has been created successfully');
 
         }else{
@@ -163,6 +182,12 @@ class SitesController extends Controller
     public function delete_site_study($id)
     {
         try {
+
+            AuditTrail::create([
+                'created_by' => auth()->user()->id,
+                'action' => 'Deleted site-study #'.$id.' ('.SiteStudy::find($id)->study->study.') for site: '.SiteStudy::find($id)->site->site_name,
+            ]);
+
             SiteStudy::destroy($id);
 
             request()->session()->flash('success', 'Site study has been deleted.');
@@ -191,6 +216,16 @@ class SitesController extends Controller
             $siteStudy->date_initiated = $request->date_initiated;
             $siteStudy->status = $request->status;
             $siteStudy->saveOrFail();
+
+            AuditTrail::create([
+                'created_by' => auth()->user()->id,
+                'action' => 'Created new site-study. Site:'
+                    .optional(Site::find($request->site))->site_name
+                    .', Study:'.optional(Study::find($request->study))->study
+                    .', Coordinator:'.optional(User::find($request->coordinator))->first_name
+                    .' '
+                    .optional(User::find($request->coordinator))->last_name,
+            ]);
 
             request()->session()->flash('success', 'Study has been created successfully');
 
@@ -258,12 +293,22 @@ class SitesController extends Controller
         $site->site_name = $request->site_name;
         $site->update();
 
+        AuditTrail::create([
+            'created_by' => auth()->user()->id,
+            'action' => 'Edited site #'.$site->id.' to "'.$request->site_name.'"',
+        ]);
+
         request()->session()->flash('success', 'Site has been updated.');
         return redirect()->back();
     }
     public function delete_site($id)
     {
         try {
+
+            AuditTrail::create([
+                'created_by' => auth()->user()->id,
+                'action' => 'Deleted site #'.$id.' ('.Site::find($id)->site_name.')',
+            ]);
             Site::destroy($id);
 
             request()->session()->flash('success', 'Site has been deleted.');
@@ -284,6 +329,11 @@ class SitesController extends Controller
             $site = new Site();
             $site->site_name = $request->site_name;
             $site->saveOrFail();
+
+            AuditTrail::create([
+                'created_by' => auth()->user()->id,
+                'action' => 'Created new site #'.$site->id.' ('.$request->site_name.')',
+            ]);
             request()->session()->flash('success', 'Site has been created successfully');
 
         }else{

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\API;
 
 use App\AllocationList;
+use App\AuditTrail;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\GenericCollection;
 use App\Inbox;
@@ -33,6 +34,11 @@ class ApiController extends Controller
             $site = new Site();
             $site->site_name = $request->site_name;
             $site->saveOrFail();
+
+            AuditTrail::create([
+                'created_by' => auth()->user()->id,
+                'action' => 'Via APP - Created new site #'.$site->id.' ('.$request->site_name.')',
+            ]);
 
             return response()->json([
                 'success' => true,
@@ -66,6 +72,11 @@ class ApiController extends Controller
         $site->site_name = $request->site_name;
         $site->update();
 
+        AuditTrail::create([
+            'created_by' => auth()->user()->id,
+            'action' => 'Via APP - Edited site #'.$site->id.' to "'.$request->site_name.'"',
+        ]);
+
         return response()->json([
             'success' => true,
             'message' => 'Site has been updated successfully'
@@ -74,6 +85,11 @@ class ApiController extends Controller
     public function delete_site($id)
     {
         try {
+
+            AuditTrail::create([
+                'created_by' => auth()->user()->id,
+                'action' => 'Via APP - Deleted site #'.$id.' ('.Site::find($id)->site_name.')',
+            ]);
             Site::destroy($id);
 
             return response()->json([
@@ -105,6 +121,11 @@ class ApiController extends Controller
             $study->study = $request->name;
             $study->study_detail = $request->detail;
             $study->saveOrFail();
+
+            AuditTrail::create([
+                'created_by' => auth()->user()->id,
+                'action' => 'Via APP - Created new study ('.$request->name.')',
+            ]);
 
             return response()->json([
                 'success' => true,
@@ -139,6 +160,11 @@ class ApiController extends Controller
         $study->study_detail = $request->detail;
         $study->update();
 
+        AuditTrail::create([
+            'created_by' => auth()->user()->id,
+            'action' => 'Via APP - Edited study #'.$study->id.' to "'.$request->name.'"',
+        ]);
+
         return response()->json([
             'success' => true,
             'message' => 'Study has been updated successfully'
@@ -147,6 +173,12 @@ class ApiController extends Controller
     public function delete_study($id)
     {
         try {
+
+            AuditTrail::create([
+                'created_by' => auth()->user()->id,
+                'action' => 'Via APP - Deleted study #'.$id.' ('.Study::find($id)->study.')',
+            ]);
+
             Study::destroy($id);
 
             return response()->json([
@@ -191,6 +223,11 @@ class ApiController extends Controller
             $stratum->stratum = $request->stratum;
             $stratum->saveOrFail();
 
+            AuditTrail::create([
+                'created_by' => auth()->user()->id,
+                'action' => 'Via APP - Created new stratum #'.$stratum->id.' ('.$request->stratum.')',
+            ]);
+
             return response()->json([
                 'success' => true,
                 'message' => 'Stratum has been created successfully'
@@ -223,6 +260,11 @@ class ApiController extends Controller
         $stratum->stratum = $request->stratum;
         $stratum->update();
 
+        AuditTrail::create([
+            'created_by' => auth()->user()->id,
+            'action' => 'Via APP - Edited stratum #'.$stratum->id.' to "'.$request->stratum.'"',
+        ]);
+
         return response()->json([
             'success' => true,
             'message' => 'Stratum has been updated successfully'
@@ -231,6 +273,11 @@ class ApiController extends Controller
     public function delete_stratum($id)
     {
         if (is_null(AllocationList::where('stratum_id',$id)->first())){
+            AuditTrail::create([
+                'created_by' => auth()->user()->id,
+                'action' => 'Via APP - Deleted stratum #'.$id.' ('.Stratum::find($id)->stratum.')',
+            ]);
+
             Stratum::destroy($id);
 
             return response()->json([

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\AllocationList;
+use App\AuditTrail;
 use App\Site;
 use App\Stratum;
 use App\Study;
@@ -71,12 +72,23 @@ class AllocationController extends Controller
         $stratum->stratum = $request->stratum;
         $stratum->update();
 
+        AuditTrail::create([
+            'created_by' => auth()->user()->id,
+            'action' => 'Edited stratum #'.$stratum->id.' to "'.$request->stratum.'"',
+        ]);
+
         request()->session()->flash('success', 'Stratum has been updated.');
         return redirect()->back();
     }
     public function delete_strata($id)
     {
         try {
+
+            AuditTrail::create([
+                'created_by' => auth()->user()->id,
+                'action' => 'Deleted stratum #'.$id.' ('.Stratum::find($id)->stratum.')',
+            ]);
+
             Stratum::destroy($id);
 
             request()->session()->flash('success', 'Stratum has been deleted.');
@@ -97,6 +109,11 @@ class AllocationController extends Controller
             $stratum = new Stratum();
             $stratum->stratum = $request->stratum;
             $stratum->saveOrFail();
+
+            AuditTrail::create([
+                'created_by' => auth()->user()->id,
+                'action' => 'Created new stratum #'.$stratum->id.' ('.$request->stratum.')',
+            ]);
             request()->session()->flash('success', 'Stratum has been created successfully');
 
         }else{
@@ -201,6 +218,17 @@ class AllocationController extends Controller
                     Session::flash('success','Allocation list has been uploaded successfully');
 
                 }
+
+                AuditTrail::create([
+                    'created_by' => auth()->user()->id,
+                    'action' => 'Uploaded allocation list for study #'
+                        .$request->study
+                        .' ('.optional(Study::find($request->study))->study.')'
+                        .' at site: '
+                        .optional(Site::find($request->site))->site_name
+                        .' for stratum '
+                        .optional(Stratum::find($request->stratum))->stratum,
+                ]);
 
             }else{
                 Session::flash('warning','File too large. File must be less than 2MB.');

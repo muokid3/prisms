@@ -84,7 +84,15 @@
                     </a>
                 @endif
 
+                @if(auth()->user()->role->has_perm([11]))
+                    <a class="nav-link" href="{{url('audit_logs')}}">
+                        <div class="sb-nav-link-icon"><i class="fab fa-stumbleupon"></i></div>
+                        Audit Logs
+                    </a>
+                @endif
+
                 @if(auth()->user()->role->has_perm([1]))
+
                     <div class="sb-sidenav-menu-heading">Users</div>
                     <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseUsers" aria-expanded="false" aria-controls="collapseUsers">
                         <div class="sb-nav-link-icon"><i class="fas fa-columns"></i></div>
