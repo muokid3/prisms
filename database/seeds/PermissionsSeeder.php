@@ -64,6 +64,10 @@ class PermissionsSeeder extends Seeder
         $permission->name = 'View audit logs'; //11
         $permission->save();
 
+        $permission = new \App\Permission();
+        $permission->name = 'Send bulk SMS'; //12
+        $permission->save();
+
 
 
 

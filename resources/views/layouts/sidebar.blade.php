@@ -33,7 +33,7 @@
                 @if(auth()->user()->role->has_perm([4,5]))
                     <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseSms" aria-expanded="false" aria-controls="collapseSms">
                         <div class="sb-nav-link-icon"><i class="fas fa-columns"></i></div>
-                        SMS
+                        Randomization
                         <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
                     </a>
 
@@ -54,14 +54,14 @@
                     <div class="sb-sidenav-menu-heading">Sites</div>
                     @if(auth()->user()->role->has_perm([7]))
                         <a class="nav-link" href="{{url('sites')}}">
-                            <div class="sb-nav-link-icon"><i class="fas fa-chart-area"></i></div>
+                            <div class="sb-nav-link-icon"><i class="fas fa-university"></i></div>
                             Sites
                         </a>
                     @endif
 
                     @if(auth()->user()->role->has_perm([6]))
                         <a class="nav-link" href="{{url('studies')}}">
-                            <div class="sb-nav-link-icon"><i class="fas fa-table"></i></div>
+                            <div class="sb-nav-link-icon"><i class="fas fa-infinity"></i></div>
                             Studies
                         </a>
                     @endif
@@ -75,27 +75,29 @@
 
                 @endif
 
-                @if(auth()->user()->role->has_perm([9]))
-                    <div class="sb-sidenav-menu-heading">Mailing</div>
+                @if(auth()->user()->role->has_perm([9,12]))
+                    <div class="sb-sidenav-menu-heading">Bulk Messaging</div>
 
-                    <a class="nav-link" href="{{url('mails/bulk')}}">
-                        <div class="sb-nav-link-icon"><i class="fas fa-mail-bulk"></i></div>
-                        Bulk E-Mail
+                    <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseMesaging" aria-expanded="false" aria-controls="collapseMesaging">
+                        <div class="sb-nav-link-icon"><i class="fas fa-envelope-open-text"></i></div>
+                        Messaging
+                        <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
                     </a>
+
+                    <div class="{{ \Request::is('bulk*') ? 'navbar-expanded' : 'collapse' }}" id="collapseMesaging" aria-labelledby="headingMesaging" data-parent="#sidenavAccordion">
+                        <nav class="sb-sidenav-menu-nested nav">
+                            <a class="nav-link" href="{{url('bulk/mails')}}">Bulk E-Mail</a>
+                            <a class="nav-link" href="{{url('bulk/messaging')}}"> Bulk Messaging</a>
+                        </nav>
+                    </div>
                 @endif
 
-                @if(auth()->user()->role->has_perm([11]))
-                    <a class="nav-link" href="{{url('audit_logs')}}">
-                        <div class="sb-nav-link-icon"><i class="fab fa-stumbleupon"></i></div>
-                        Audit Logs
-                    </a>
-                @endif
 
                 @if(auth()->user()->role->has_perm([1]))
 
                     <div class="sb-sidenav-menu-heading">Users</div>
                     <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseUsers" aria-expanded="false" aria-controls="collapseUsers">
-                        <div class="sb-nav-link-icon"><i class="fas fa-columns"></i></div>
+                        <div class="sb-nav-link-icon"><i class="fas fa-users"></i></div>
                         User Management
                         <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
                     </a>
@@ -107,6 +109,13 @@
                         </nav>
                     </div>
 
+                @endif
+
+                @if(auth()->user()->role->has_perm([11]))
+                    <a class="nav-link" href="{{url('audit_logs')}}">
+                        <div class="sb-nav-link-icon"><i class="fab fa-stumbleupon"></i></div>
+                        Audit Logs
+                    </a>
                 @endif
 
 

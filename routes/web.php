@@ -81,9 +81,16 @@ Route::group(['middleware' => ['auth']], function () {
     Route::get('ajax/sms', 'RandomizationController@smsDT')->name('sms-dt')->middleware('perm:5');
 
     //mails
-    Route::get('/mails/bulk', 'MailController@bulk_mails')->middleware('perm:9');
-    Route::post('/mails/bulk', 'MailController@create_bulk_mail')->middleware('perm:9');
+    Route::get('/bulk/mails', 'MailController@bulk_mails')->middleware('perm:9');
+    Route::post('/bulk/mails', 'MailController@create_bulk_mail')->middleware('perm:9');
     Route::get('ajax/mails/bulk', 'MailController@bulkMailsDT')->name('bulk-mails-dt')->middleware('perm:9');
+
+
+    //bulk sms
+    Route::get('/bulk/messaging', 'SmsController@bulk_sms')->middleware('perm:12');
+    Route::post('/bulk/messaging/group', 'SmsController@create_group_bulk_sms')->middleware('perm:12');
+    Route::post('/bulk/messaging/specify', 'SmsController@create_specified_bulk_sms')->middleware('perm:12');
+    Route::get('ajax/messaging/bulk', 'SmsController@bulkSmsDT')->name('bulk-sms-dt')->middleware('perm:12');
 
     //audit logs
     Route::get('/audit_logs', 'UserController@audit_logs')->middleware('perm:11');
