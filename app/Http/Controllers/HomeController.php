@@ -140,4 +140,12 @@ class HomeController extends Controller
 
 
     }
+
+    public function strata ($stduy_id){
+        $strata = AllocationList::where('study_id',$stduy_id)->distinct()->get(['stratum_id']);
+
+        return json_encode(Stratum::whereIn('id', $strata)->get());
+
+    }
+
 }

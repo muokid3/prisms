@@ -25,6 +25,9 @@ Route::group(['middleware' => ['auth']], function () {
     Route::put('edit-profile', 'UserController@updateProfile');
     Route::put('change-password', 'UserController@updatePassword');
 
+    Route::get('study/strata/{id}', 'HomeController@strata');
+
+
 
 
     /*

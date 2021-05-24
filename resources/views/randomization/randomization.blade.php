@@ -47,7 +47,48 @@
                 "order": [[0, "desc"]]
             });
 
+            $('#study_id').on('change', function() {
+                $('#stratum_id').empty();
+
+
+                $.ajax({
+                    url: '/study/strata/'+this.value,
+                    dataType: 'JSON',
+                    type: 'GET',
+                    success: function(response) {
+                        //console.log(response);
+
+                        var len = response.length;
+
+                        //console.log("Length"+len);
+
+                        $('#stratum_id').append( '<option value="">Select Stratum</option>' );
+
+                        for( var i = 0; i<len; i++){
+                            var id = response[i]['id'];
+                            var stratum = response[i]['stratum'];
+
+                            // console.log(i);
+                            // console.log(data[i].id);
+                            console.log(id);
+                            console.log(name);
+
+                            console.log("<option value='"+id+"'>"+stratum+"</option>");
+
+
+                            $('#stratum_id').append( '<option value="'+id+'">'+stratum+'</option>' );
+
+
+                        }
+
+                    }
+                })
+            });
+
+
         });
+
+
 
         google.charts.load('current', {'packages':['corechart']});
         google.charts.setOnLoadCallback(drawAllocationChart);
@@ -55,9 +96,11 @@
         function drawAllocationChart() {
             var items = [
                     ['Treatment', 'Allocation'],
-                    @foreach ($allocations as $allocation)
-                        [ '{{ $allocation->allocation }}', {{ $allocation->total }}],
-                    @endforeach
+
+                        @foreach ($allocations as $allocation)
+                            [ '{{ $allocation->allocation }}', {{ $allocation->total }}],
+                        @endforeach
+
                 ];
 
            // console.log(items);
@@ -123,43 +166,64 @@
 
                 <div class="row">
 
-                    <div class="col-lg-6 offset-6">
+                    <div class="col-lg-12">
                         <form id="userform" action="{{ url('randomization') }}" method="post" id="user-form" enctype="multipart/form-data">
                         {{ csrf_field() }}
                         {{--                        spoofing--}}
                         <input type="hidden" name="_method" id="user-spoof-input" value="PUT" disabled/>
 
-                        <div class="row">
 
-                            <div class="col-md-5">
-                                <div class="row mb-3">
-                                    <label class="col-sm-5 col-form-label" for="start_date">Start Date</label>
+                            <div class="row">
+                                <div class="col-md-2">
+                                    <select class="dropdown form-control" data-style="select-with-transition" title="Select Study" tabindex="-98"
+                                            name="study_id" id="study_id" required>
+                                        <option value="">Select Study</option>
 
-                                    <div class="col-sm-7">
-                                        <input type="text" value="{{ empty($start_date) ? '' : $start_date }}" class="form-control datepicker" id="datepicker"  name="start_date" required />
+                                        @foreach( $studies as $study)
+                                            <option value="{{ $study->id  }}">{{ $study->study }}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
+
+
+                                <div class="col-md-2">
+                                    <select class="dropdown form-control" data-style="select-with-transition" title="Select Stratum" tabindex="-98"
+                                            name="stratum_id" id="stratum_id" required>
+                                        <option value="">Select Stratum</option>
+                                    </select>
+                                </div>
+
+
+                                <div class="col-md-3">
+                                    <div class="row mb-3">
+                                        <label class="col-sm-4 col-form-label" for="start_date">Start Date</label>
+
+                                        <div class="col-sm-8">
+                                            <input type="text" value="{{ empty($start_date) ? '' : $start_date }}" class="form-control datepicker" id="datepicker"  name="start_date"  />
+                                        </div>
+                                    </div>
+                                </div>
+
+
+                                <div class="col-md-3">
+                                    <div class="row mb-3">
+                                        <label class="col-sm-4 col-form-label" for="end_date">End Date</label>
+
+                                        <div class="col-sm-8">
+                                            <input type="text" value="{{ empty($end_date) ? '' : $end_date }}" class="form-control datepicker" id="datepicker"  name="end_date"  />
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-2">
+                                    <div class="form-group">
+                                        <button class="btn btn-success" id="save-brand"><i class="fa fa-save"></i> Filter</button>
                                     </div>
                                 </div>
                             </div>
 
 
-                            <div class="col-md-5">
-                                <div class="row mb-3">
-                                    <label class="col-sm-5 col-form-label" for="end_date">End Date</label>
 
-                                    <div class="col-sm-7">
-                                        <input type="text" value="{{ empty($end_date) ? '' : $end_date }}" class="form-control datepicker" id="datepicker"  name="end_date" required />
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="col-md-2">
-                                <div class="form-group">
-                                    <button class="btn btn-success" id="save-brand"><i class="fa fa-save"></i> Filter</button>
-                                </div>
-                            </div>
-
-
-                        </div>
 
 
                         <input type="hidden" name="id" id="id"/>
@@ -171,7 +235,12 @@
                         <div class="card mb-4">
                             <div class="card-header">
                                 <i class="fas fa-chart-pie mr-1"></i>
-                                Treatment allocation
+                                @isset($selectedStudy)
+                                    Treatment allocation: Study: <strong>{{$selectedStudy->study}}</strong> Stratum: <strong>{{ $selectedStratum->stratum}}</strong>
+                                @else
+                                    Please select a study to show treatment allocation
+                                @endisset
+
                             </div>
                             <div id="piechart"></div>
                             <div class="card-footer small text-muted">Updated now</div>
