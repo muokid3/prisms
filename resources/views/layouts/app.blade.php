@@ -14,6 +14,8 @@
     <title>{{ config('app.name', 'PRISMS') }}</title>
 
     <link href="{{url('css/styles.css')}}" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/css/intlTelInput.css"/>
+
 
     {{--datepicker css--}}
     <link href="//cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.7.14/css/bootstrap-datetimepicker.css" rel="stylesheet"/>
@@ -60,6 +62,9 @@
 <script src="{{ url('js/jquery.min.js') }}" type="text/javascript"></script>
 <script src="{{ url('js/popper.min.js') }}" type="text/javascript"></script>
 <script src="{{ url('js/bootstrap-material-design.min.js') }}" type="text/javascript"></script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/js/intlTelInput.min.js"></script>
+
 
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>

@@ -78,7 +78,7 @@ class UserController extends Controller
     {
         $data = request()->validate([
             'user_group' => 'required|max:10',
-            'phone_no' => 'required|max:12|unique:users,phone_no',
+            'phone_number' => 'required|max:13|unique:users,phone_no',
             'email' => 'nullable|email|max:255|unique:users,email',
             'title'  => 'required',
             'site'  => 'required',
@@ -92,13 +92,12 @@ class UserController extends Controller
         $user = new User();
         $user->user_group = $request->user_group;
         $user->email = $request->email;
-        $user->phone_no = $request->phone_no;
+        $user->phone_no = $request->phone_number;
         $user->first_name = $request->first_name;
         $user->last_name = $request->last_name;
         $user->title = $request->title;
         $user->site_id = $request->site;
         $user->password = bcrypt($this->random_pass);
-
 
         $pass = $this->random_pass;
 

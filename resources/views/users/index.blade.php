@@ -3,6 +3,15 @@
 @push('js')
     <script>
 
+        const phoneInputField = document.querySelector("#phone");
+        const phoneInput = window.intlTelInput(phoneInputField, {
+            initialCountry: "ke",
+            hiddenInput: "phone_number",
+            utilsScript:
+                "https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/js/utils.js",
+        });
+
+
         $(function() {
             // server side - lazy loading
             $('#users-dt').DataTable({
@@ -104,7 +113,6 @@
                 }
                 return false;
             });
-
 
 
         });
@@ -209,7 +217,8 @@
                             <div class="col-md-6">
                                 <div class="form-group">
                                     <label class="control-label" for="phone_no">Phone Number</label>
-                                    <input type="number" value="{{ old('phone_no') }}" class="form-control pb-0 mt-2" name="phone_no" id="phone_no" required/>
+                                    <input id="phone" type="tel" class="form-control pb-0 mt-2"  name="phone_no" required/>
+{{--                                    <input type="number" value="{{ old('phone_no') }}" class="form-control pb-0 mt-2" name="phone_no" id="phone_no" required/>--}}
                                 </div>
                             </div>
 
