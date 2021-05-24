@@ -89,7 +89,7 @@
                             $('#first_name').val(data['first_name']);
                             $('#last_name').val(data['last_name']);
                             $('#email').val(data['email']);
-                            $('#phone_no').val(data['phone_no']);
+                            $('#phone').val(data['phone_no']);
                             $("#user_group").val(data['user_group']).change();
                             $("#site").val(data['site_id']).change();
                             $('#id').val(data['id']);

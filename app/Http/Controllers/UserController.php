@@ -134,7 +134,7 @@ class UserController extends Controller
 
         $data = request()->validate([
             'user_group' => 'required|max:10',
-            'phone_no' => 'required|max:12|unique:users,phone_no,'.$request->id,
+            'phone_number' => 'required|max:13|unique:users,phone_no,'.$request->id,
             'email' => 'required|email|max:255|unique:users,email,'.$request->id,
             'title'  => 'required',
             'site'  => 'required',
@@ -148,7 +148,7 @@ class UserController extends Controller
         $user = User::find($request->id);
         $user->user_group = $request->user_group;
         $user->email = $request->email;
-        $user->phone_no = $request->phone_no;
+        $user->phone_no = $request->phone_number;
         $user->first_name = $request->first_name;
         $user->last_name = $request->last_name;
         $user->title = $request->title;
