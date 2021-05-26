@@ -18,6 +18,7 @@ use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\ResourceCollection;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Session;
 
 class ApiController extends Controller
@@ -319,6 +320,10 @@ class ApiController extends Controller
         $tempPath = $file->getRealPath();
         $fileSize = $file->getSize();
         $mimeType = $file->getMimeType();
+
+        Log::info("filename::".$filename);
+        Log::info("extension::".$extension);
+        Log::info("fileSize::".$fileSize);
 
         // Valid File Extensions
         $valid_extension = array("csv");
