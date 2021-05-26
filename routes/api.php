@@ -74,6 +74,9 @@ Route::group([
     Route::get('stratum/delete/{id}', 'ApiController@delete_stratum');
     Route::post('stratum/update', 'ApiController@update_stratum');
 
+    Route::post('allocation_list/upload', 'ApiController@upload_allocation_list');
+
+
     //sms
     Route::get('sms', 'ApiController@get_sms');
     Route::get('sms/graph', 'ApiController@get_sms_graph');
