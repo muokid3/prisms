@@ -371,6 +371,8 @@ class ApiController extends Controller
                 }
                 fclose($file);
 
+
+                Log::info("Array size:::".sizeof($importData_arr));
 //                dd($importData_arr);
                 // Insert to MySQL database
                 foreach($importData_arr as $importData){
