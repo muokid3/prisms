@@ -8,6 +8,7 @@ use App\Site;
 use App\Stratum;
 use App\Study;
 use Carbon\Carbon;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Session;
@@ -201,23 +202,39 @@ class AllocationController extends Controller
 
 //                dd($importData_arr);
                 // Insert to MySQL database
+                $duplicates = 0;
+
                 foreach($importData_arr as $importData){
 
 
                     $sequence = $importData[0];
                     $allocation = $importData[1];
 
-                    $allocList = new AllocationList();
-                    $allocList->sequence = $sequence;
-                    $allocList->study_id = $request->study;
-                    $allocList->site_id = $request->site;
-                    $allocList->stratum_id = $request->stratum;
-                    $allocList->allocation = $allocation;
-                    $allocList->saveOrFail();
+                    $exists = AllocationList::where('study_id',$request->study)
+                        ->where('site_id',$request->site)
+                        ->where('stratum_id',$request->stratum)
+                        ->where('allocation',$allocation)
+                        ->first();
 
-                    Session::flash('success','Allocation list has been uploaded successfully');
-
+                    if (is_null($exists)){
+                        $allocList = new AllocationList();
+                        $allocList->sequence = $sequence;
+                        $allocList->study_id = $request->study;
+                        $allocList->site_id = $request->site;
+                        $allocList->stratum_id = $request->stratum;
+                        $allocList->allocation = $allocation;
+                        $allocList->saveOrFail();
+                    }else{
+                        $duplicates += 1;
+                    }
                 }
+
+                if ($duplicates == 0)
+                    $message = 'Allocation list has been uploaded successfully.';
+                else
+                    $message = 'Allocation list has been uploaded successfully. Duplicates have been skipped';
+
+                Session::flash('success',$message);
 
                 AuditTrail::create([
                     'created_by' => auth()->user()->id,

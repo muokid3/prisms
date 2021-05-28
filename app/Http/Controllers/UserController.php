@@ -404,7 +404,7 @@ class UserController extends Controller
                 Session::flash("success", "Group has been deleted");
 
             });
-            
+
 
         } catch (QueryException $qe) {
             request()->session()->flash('warning', 'Could not delete group because it has active users on the system');
