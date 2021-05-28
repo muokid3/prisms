@@ -310,7 +310,6 @@ class ApiController extends Controller
         ]);
 
         $success = true;
-        $message = "Allocation list has been uploaded successfully";
 
         $file = $request->file('uploaded_file');
 
@@ -375,21 +374,37 @@ class ApiController extends Controller
                 Log::info("Array size:::".sizeof($importData_arr));
 //                dd($importData_arr);
                 // Insert to MySQL database
-                foreach($importData_arr as $importData){
 
+                $duplicates = 0;
+
+                foreach($importData_arr as $importData){
 
                     $sequence = $importData[0];
                     $allocation = $importData[1];
 
-                    $allocList = new AllocationList();
-                    $allocList->sequence = $sequence;
-                    $allocList->study_id = $request->study_id;
-                    $allocList->site_id = $request->site_id;
-                    $allocList->stratum_id = $request->stratum_id;
-                    $allocList->allocation = $allocation;
-                    $allocList->saveOrFail();
+                    $exists = AllocationList::where('study_id',$request->study)
+                        ->where('site_id',$request->site)
+                        ->where('stratum_id',$request->stratum)
+                        ->where('allocation',$allocation)
+                        ->first();
 
+                    if (is_null($exists)){
+                        $allocList = new AllocationList();
+                        $allocList->sequence = $sequence;
+                        $allocList->study_id = $request->study_id;
+                        $allocList->site_id = $request->site_id;
+                        $allocList->stratum_id = $request->stratum_id;
+                        $allocList->allocation = $allocation;
+                        $allocList->saveOrFail();
+                    }else{
+                        $duplicates += 1;
+                    }
                 }
+
+                if ($duplicates == 0)
+                    $message = 'Allocation list has been uploaded successfully.';
+                else
+                    $message = 'Allocation list has been uploaded successfully. Duplicates have been skipped';
 
                 AuditTrail::create([
                     'created_by' => auth()->user()->id,
