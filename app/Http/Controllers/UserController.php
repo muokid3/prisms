@@ -389,17 +389,29 @@ class UserController extends Controller
             'id' => 'required|exists:user_groups,id',
         ]);
 
-        $user_group = UserGroup::find($request->id);
 
-        AuditTrail::create([
-            'created_by' => auth()->user()->id,
-            'action' => 'Deleted user group #'.$request->id.' ('.$user_group->name.')',
-        ]);
+        try{
+            $user_group = UserGroup::find($request->id);
 
-        $user_group->delete();
+            DB::transaction(function() use ($user_group, $request) {
+                AuditTrail::create([
+                    'created_by' => auth()->user()->id,
+                    'action' => 'Deleted user group #'.$request->id.' ('.$user_group->name.')',
+                ]);
+
+                $user_group->delete();
+
+                Session::flash("success", "Group has been deleted");
+
+            });
+            
+
+        } catch (QueryException $qe) {
+            request()->session()->flash('warning', 'Could not delete group because it has active users on the system');
+        }
 
 
-        Session::flash("success", "Group has been deleted");
+
 
 
         return redirect()->back();
