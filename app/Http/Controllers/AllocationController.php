@@ -144,7 +144,7 @@ class AllocationController extends Controller
             'file' => 'required|file',
         ]);
 
-        
+
 
         $file = $request->file('file');
 
@@ -206,18 +206,25 @@ class AllocationController extends Controller
                 $duplicates = 0;
 
                 foreach($importData_arr as $importData){
-
-
                     $sequence = $importData[0];
-                    $allocation = $importData[1];
+                    //$allocation = $importData[1];
 
                     $exists = AllocationList::where('study_id',$request->study)
                         ->where('site_id',$request->site)
                         ->where('stratum_id',$request->stratum)
-                        ->where('allocation',$allocation)
+                        ->where('sequence',$sequence)
                         ->first();
 
-                    if (is_null($exists)){
+                    if (!is_null($exists)){
+                        $duplicates += 1;
+                    }
+                }
+
+                if ($duplicates == 0){
+                    foreach($importData_arr as $importData){
+                        $sequence = $importData[0];
+                        $allocation = $importData[1];
+
                         $allocList = new AllocationList();
                         $allocList->sequence = $sequence;
                         $allocList->study_id = $request->study;
@@ -225,28 +232,25 @@ class AllocationController extends Controller
                         $allocList->stratum_id = $request->stratum == null ? 1 : $request->stratum;
                         $allocList->allocation = $allocation;
                         $allocList->saveOrFail();
-                    }else{
-                        $duplicates += 1;
                     }
-                }
 
-                if ($duplicates == 0)
                     $message = 'Allocation list has been uploaded successfully.';
-                else
-                    $message = 'Allocation list has been uploaded successfully. Duplicates have been skipped';
+                    Session::flash('success',$message);
 
-                Session::flash('success',$message);
-
-                AuditTrail::create([
-                    'created_by' => auth()->user()->id,
-                    'action' => 'Uploaded allocation list for study #'
-                        .$request->study
-                        .' ('.optional(Study::find($request->study))->study.')'
-                        .' at site: '
-                        .optional(Site::find($request->site))->site_name
-                        .' for stratum '
-                        .optional(Stratum::find($request->stratum))->stratum,
-                ]);
+                    AuditTrail::create([
+                        'created_by' => auth()->user()->id,
+                        'action' => 'Uploaded allocation list for study #'
+                            .$request->study
+                            .' ('.optional(Study::find($request->study))->study.')'
+                            .' at site: '
+                            .optional(Site::find($request->site))->site_name
+                            .' for stratum '
+                            .optional(Stratum::find($request->stratum))->stratum,
+                    ]);
+                }else{
+                    $message = 'Duplicate allocation entries have been detected and have been skipped';
+                    Session::flash('warning',$message);
+                }
 
             }else{
                 Session::flash('warning','File too large. File must be less than 2MB.');
