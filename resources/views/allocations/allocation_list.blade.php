@@ -68,7 +68,7 @@
                                 <label class="control-label" for="stratum" style="line-height: 6px;">Stratum</label>
 
                                 <select class="dropdown form-control" data-style="select-with-transition" title="Choose Stratum" tabindex="-98"
-                                        name="stratum" id="stratum" required>
+                                        name="stratum" id="stratum" >
                                     <option value="">Select stratum</option>
                                     @foreach( $strata as $stratum)
                                         <option value="{{ $stratum->id  }}">{{ $stratum->stratum }}</option>

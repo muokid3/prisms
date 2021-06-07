@@ -138,7 +138,7 @@ class AllocationController extends Controller
     }
     public function upload(Request  $request) {
         $data = request()->validate([
-            'stratum' => 'required|max:10',
+            'stratum' => 'nullable|max:10',
             'study' => 'required|max:10',
             'site' => 'required|max:10',
             'file' => 'required|file',
@@ -221,7 +221,7 @@ class AllocationController extends Controller
                         $allocList->sequence = $sequence;
                         $allocList->study_id = $request->study;
                         $allocList->site_id = $request->site;
-                        $allocList->stratum_id = $request->stratum;
+                        $allocList->stratum_id = $request->stratum == null ? 1 : $request->stratum;
                         $allocList->allocation = $allocation;
                         $allocList->saveOrFail();
                     }else{
