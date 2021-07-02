@@ -148,7 +148,7 @@ class SmsController extends Controller
                 $lookup_users = User::where('active',1)->where('phone_no', $phone_no)->first();
 
 
-                if ($lookup_users->count() > 0) {
+                if (!is_null($lookup_users)) {
 
                     $available = DB::table('user_permissions')
                         ->select('id')
