@@ -24,7 +24,7 @@ class SiteStudy extends Model
         $data = parent::toArray();
         $data['study_name'] = $this->study->study;
         $data['study_detail'] = $this->study->study_detail;
-        $data['site_name'] = $this->site->site_name;
+        $data['site_name'] = optional($this->site)->site_name;
 
         return $data;
     }
