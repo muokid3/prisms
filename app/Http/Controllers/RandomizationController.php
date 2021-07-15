@@ -26,20 +26,35 @@ class RandomizationController extends Controller
 
         if (auth()->user()->user_group == 1){
 
+            //all studies
             $studies = Study::all();
 
+            //overall randomization rate
+            $rates = AllocationList::select(DB::raw('Date(date_randomised) as date_randomised'), DB::raw('count(*) as total'))
+                ->whereNotNull('date_randomised')
+                ->whereNotNull('participant_id')
+                ->groupBy('date_randomised')
+                ->orderBy('date_randomised', 'ASC')
+                ->get();
+
         }else{
-            $studyIds = SiteStudy::where('site_id', auth()->user()->site_id)->get('study_id');
+
+            //only studies that site is doing
+            $studyIds = SiteStudy::where('site_id', auth()->user()->site_id)->pluck('study_id');
             $studies = Study::whereIn('id', $studyIds)->get();
+
+            //randomization rate spefici to that site
+            $rates = AllocationList::select(DB::raw('Date(date_randomised) as date_randomised'), DB::raw('count(*) as total'))
+                ->whereNotNull('date_randomised')
+                ->whereNotNull('participant_id')
+                ->where('site_id', auth()->user()->site_id)
+                ->groupBy('date_randomised')
+                ->orderBy('date_randomised', 'ASC')
+                ->get();
         }
 
 
-        $rates = AllocationList::select(DB::raw('Date(date_randomised) as date_randomised'), DB::raw('count(*) as total'))
-            ->whereNotNull('date_randomised')
-            ->whereNotNull('participant_id')
-            ->groupBy('date_randomised')
-            ->orderBy('date_randomised', 'ASC')
-            ->get();
+
 
         //dd($allocations);
 
@@ -64,34 +79,13 @@ class RandomizationController extends Controller
         ]);
 
         if (auth()->user()->user_group == 1){
-            if ($request->start_date !=null && $request->end_date !=null){
-                $allocations = AllocationList::groupBy('allocation')
-                    ->select('allocation', DB::raw('count(*) as total'))
-                    ->where('study_id',$request->study_id)
-                    ->where('stratum_id',$request->stratum_id)
-                    ->whereNotNull('date_randomised')
-                    ->whereDate('date_randomised', '>=', $request->start_date)
-                    ->whereDate('date_randomised', '<=', $request->end_date)
-                    ->whereNotNull('participant_id')
-                    ->get();
-            }else{
-                $allocations = AllocationList::groupBy('allocation')
-                    ->select('allocation', DB::raw('count(*) as total'))
-                    ->where('study_id',$request->study_id)
-                    ->where('stratum_id',$request->stratum_id)
-                    ->whereNotNull('date_randomised')
-                    ->whereNotNull('participant_id')
-                    ->get();
-            }
 
-
+            //all studies
             $studies = Study::all();
-        }else{
-            $studyIds = SiteStudy::where('site_id', auth()->user()->site_id)->get('study_id');
 
+            //overall allocation rate
             if ($request->start_date !=null && $request->end_date !=null){
-                $allocations = AllocationList::whereIn('study_id', $studyIds)
-                    ->groupBy('allocation')
+                $allocations = AllocationList::groupBy('allocation')
                     ->select('allocation', DB::raw('count(*) as total'))
                     ->where('study_id',$request->study_id)
                     ->where('stratum_id',$request->stratum_id)
@@ -101,8 +95,7 @@ class RandomizationController extends Controller
                     ->whereNotNull('participant_id')
                     ->get();
             }else{
-                $allocations = AllocationList::whereIn('study_id', $studyIds)
-                    ->groupBy('allocation')
+                $allocations = AllocationList::groupBy('allocation')
                     ->select('allocation', DB::raw('count(*) as total'))
                     ->where('study_id',$request->study_id)
                     ->where('stratum_id',$request->stratum_id)
@@ -111,38 +104,97 @@ class RandomizationController extends Controller
                     ->get();
             }
 
+            //overall randomization rate
+            if ($request->start_date !=null && $request->end_date !=null){
+                $rates = AllocationList::select(DB::raw('Date(date_randomised) as date_randomised'), DB::raw('count(*) as total'))
+                    ->whereNotNull('date_randomised')
+                    ->whereNotNull('participant_id')
+                    ->where('study_id',$request->study_id)
+                    ->where('stratum_id',$request->stratum_id)
+                    ->whereDate('date_randomised', '>=', $request->start_date)
+                    ->whereDate('date_randomised', '<=', $request->end_date)
+                    ->groupBy('date_randomised')
+                    ->orderBy('date_randomised', 'ASC')
+                    ->get();
+            }else{
+                $rates = AllocationList::select(DB::raw('Date(date_randomised) as date_randomised'), DB::raw('count(*) as total'))
+                    ->whereNotNull('date_randomised')
+                    ->whereNotNull('participant_id')
+                    ->where('study_id',$request->study_id)
+                    ->where('stratum_id',$request->stratum_id)
+                    ->groupBy('date_randomised')
+                    ->orderBy('date_randomised', 'ASC')
+                    ->get();
+            }
 
+
+        }else{
+
+            //only studies that site is doing
+            $studyIds = SiteStudy::where('site_id', auth()->user()->site_id)->pluck('study_id');
             $studies = Study::whereIn('id', $studyIds)->get();
 
+            //alocation rate as per site
+            if ($request->start_date !=null && $request->end_date !=null){
+                $allocations = AllocationList::whereIn('study_id', $studyIds)
+                    ->groupBy('allocation')
+                    ->select('allocation', DB::raw('count(*) as total'))
+                    ->where('study_id',$request->study_id)
+                    ->where('stratum_id',$request->stratum_id)
+                    ->where('site_id', auth()->user()->site_id)
+                    ->whereNotNull('date_randomised')
+                    ->whereDate('date_randomised', '>=', $request->start_date)
+                    ->whereDate('date_randomised', '<=', $request->end_date)
+                    ->whereNotNull('participant_id')
+                    ->get();
+            }else{
+                $allocations = AllocationList::whereIn('study_id', $studyIds)
+                    ->groupBy('allocation')
+                    ->select('allocation', DB::raw('count(*) as total'))
+                    ->where('study_id',$request->study_id)
+                    ->where('stratum_id',$request->stratum_id)
+                    ->where('site_id', auth()->user()->site_id)
+                    ->whereNotNull('date_randomised')
+                    ->whereNotNull('participant_id')
+                    ->get();
+            }
+
+
+
+            //randomization rate as per site
+            if ($request->start_date !=null && $request->end_date !=null){
+                $rates = AllocationList::select(DB::raw('Date(date_randomised) as date_randomised'), DB::raw('count(*) as total'))
+                    ->whereNotNull('date_randomised')
+                    ->whereNotNull('participant_id')
+                    ->where('study_id',$request->study_id)
+                    ->where('stratum_id',$request->stratum_id)
+                    ->where('site_id', auth()->user()->site_id)
+                    ->whereDate('date_randomised', '>=', $request->start_date)
+                    ->whereDate('date_randomised', '<=', $request->end_date)
+                    ->groupBy('date_randomised')
+                    ->orderBy('date_randomised', 'ASC')
+                    ->get();
+            }else{
+                $rates = AllocationList::select(DB::raw('Date(date_randomised) as date_randomised'), DB::raw('count(*) as total'))
+                    ->whereNotNull('date_randomised')
+                    ->whereNotNull('participant_id')
+                    ->where('study_id',$request->study_id)
+                    ->where('stratum_id',$request->stratum_id)
+                    ->where('site_id', auth()->user()->site_id)
+                    ->groupBy('date_randomised')
+                    ->orderBy('date_randomised', 'ASC')
+                    ->get();
+            }
+
+
         }
 
 
-        if ($request->start_date !=null && $request->end_date !=null){
-            $rates = AllocationList::select(DB::raw('Date(date_randomised) as date_randomised'), DB::raw('count(*) as total'))
-                ->whereNotNull('date_randomised')
-                ->whereNotNull('participant_id')
-                ->where('study_id',$request->study_id)
-                ->where('stratum_id',$request->stratum_id)
-                ->whereDate('date_randomised', '>=', $request->start_date)
-                ->whereDate('date_randomised', '<=', $request->end_date)
-                ->groupBy('date_randomised')
-                ->orderBy('date_randomised', 'ASC')
-                ->get();
-        }else{
-            $rates = AllocationList::select(DB::raw('Date(date_randomised) as date_randomised'), DB::raw('count(*) as total'))
-                ->whereNotNull('date_randomised')
-                ->whereNotNull('participant_id')
-                ->where('study_id',$request->study_id)
-                ->where('stratum_id',$request->stratum_id)
-                ->groupBy('date_randomised')
-                ->orderBy('date_randomised', 'ASC')
-                ->get();
-        }
 
 
         $study = Study::find($request->study_id);
         $stratum = Stratum::find($request->stratum_id);
-
+//dd($allocations);
         return view('randomization.randomization')->with([
             'allocations' => $allocations,
             'studies' => $studies,
