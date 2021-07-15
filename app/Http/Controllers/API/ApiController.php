@@ -501,4 +501,23 @@ class ApiController extends Controller
     }
     //end of study allocation
 
+    //user randz
+    public function get_user_randomizations()
+    {
+        $randz = AllocationList::where('user_id', auth()->id())
+            ->whereNotNull('date_randomised')
+            ->whereNotNull('participant_id')
+            ->count();
+
+        if ($randz > 0){
+            $message = "Hi ".ucfirst(auth()->user()->first_name).", you have successfully randomized ".$randz." participants.";
+        }else{
+            $message = "Hi ".ucfirst(auth()->user()->first_name).", you have not done any randomizations so far.";
+        }
+        return response()->json([
+            'success' => true,
+            'message' => $message
+        ], 200);
+    }
+
 }

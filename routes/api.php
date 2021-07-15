@@ -81,6 +81,9 @@ Route::group([
     Route::get('sms', 'ApiController@get_sms');
     Route::get('sms/graph', 'ApiController@get_sms_graph');
 
+    //user randomizations
+    Route::get('user_randomizations', 'ApiController@get_user_randomizations');
+
 
 
 
