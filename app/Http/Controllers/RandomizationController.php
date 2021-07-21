@@ -39,7 +39,7 @@ class RandomizationController extends Controller
                 ->groupBy(DB::raw('Date(date_randomised)'))
                 ->get();
 
-            Log::info($rates);
+            //Log::info($rates);
 
         }else{
 
@@ -118,8 +118,8 @@ class RandomizationController extends Controller
                     ->where('stratum_id',$request->stratum_id)
                     ->whereDate('date_randomised', '>=', $request->start_date)
                     ->whereDate('date_randomised', '<=', $request->end_date)
-                    ->groupBy('date_randomised')
                     ->orderBy('date_randomised', 'ASC')
+                    ->groupBy(DB::raw('Date(date_randomised)'))
                     ->get();
             }else{
                 $rates = AllocationList::select(DB::raw('Date(date_randomised) as date_randomised'), DB::raw('count(*) as total'))
@@ -127,8 +127,8 @@ class RandomizationController extends Controller
                     ->whereNotNull('participant_id')
                     ->where('study_id',$request->study_id)
                     ->where('stratum_id',$request->stratum_id)
-                    ->groupBy('date_randomised')
                     ->orderBy('date_randomised', 'ASC')
+                    ->groupBy(DB::raw('Date(date_randomised)'))
                     ->get();
             }
 
