@@ -6,6 +6,7 @@ use App\AllocationList;
 use App\Http\Controllers\Controller;
 use App\Inbox;
 use App\Sent;
+use App\Stratum;
 use App\Study;
 use App\User;
 use Carbon\Carbon;
@@ -110,7 +111,7 @@ class SmsController extends Controller
             print_r($message);
             echo sizeof($message);
 
-            if (sizeof($message) <= 3 || sizeof($message) > 6) {
+            if (sizeof($message) <= 3 || sizeof($message) > 7) {
 
                 $inbox->status = 44;
                 $inbox->update();
@@ -128,17 +129,43 @@ class SmsController extends Controller
                 Log::info("INCORRECT MESSAGE FORMAT: ".$reply. "\n");
 
             } else{
+
+                $strat = "";
+
                 if (sizeof($message) == 5) {
                     $ipno = $message[1];
                     $site = $message[4];
                     $study = $message[3];
                     $phone_no = $source;
                 } elseif (sizeof($message) == 6) {
-                    ##check the source in the database
+                    ##check if index 5 is stratum or phone number
+                    $ipno = $message[1];
+                    $site = $message[4];
+                    $study = $message[3];
+                    $i5 = $message[5];
+
+                    if (substr($i5, 0, 5) == "strat"){
+                        $str_arr = explode (":", $i5);
+                        $strat =  sizeof($str_arr) > 1 ? $str_arr[1] : "";
+                        $phone_no = $source;
+                    }else{
+                        $phone_no = $message[5];
+                    }
+
+
+                } elseif (sizeof($message) == 7) {
+                    ##this one has stratum
                     $ipno = $message[1];
                     $site = $message[4];
                     $study = $message[3];
                     $phone_no = $message[5];
+                    $i6 = $message[6];
+
+                    if (substr($i6, 0, 5) == "strat"){
+                        $str_arr = explode (":", $i6);
+                        $strat =  sizeof($str_arr) > 1 ? $str_arr[1] : "";
+                    }
+
                 } elseif (sizeof($message) == 4) {
                     $ipno = $message[1];
                     $study = $message[3];
@@ -162,10 +189,15 @@ class SmsController extends Controller
                         //user has randomising permissions
 
                         $st = Study::where('study',$study)->first();
-
                         $stId = is_null($st) ? 0 : $st->id;
 
-                        $select_ipnos = AllocationList::where('ipno',$ipno)->where('study_id',$stId)->first();
+                        $stratum = Stratum::where('stratum',$strat)->first();
+                        $stratumId = is_null($stratum) ? 1 : $stratum->id;
+
+                        $select_ipnos = AllocationList::where('ipno',$ipno)
+                            ->where('study_id',$stId)
+                            //->where('stratum_id',$stratumId)
+                            ->first();
 
                         if (!is_null($select_ipnos)) {
                             $reply = "The participant with the ipno " . $ipno . " is already allocated " . $select_ipnos->allocation . " by " .
@@ -178,6 +210,7 @@ class SmsController extends Controller
                             $alloc_seq = AllocationList::selectRaw(" MIN(sequence) AS next_sequence")
                                 ->whereNull('date_randomised')
                                 ->where('study_id',$stId)
+                                ->where('stratum_id',$stratumId)
                                 ->first();
 
                             $next_sequence = $alloc_seq->next_sequence;
@@ -191,6 +224,7 @@ class SmsController extends Controller
                                 $lookup_allocation = AllocationList::where('sequence',$next_sequence)
                                     ->whereNull('date_randomised')
                                     ->where('study_id',$stId)
+                                    ->where('stratum_id',$stratumId)
                                     ->first();
 
                                 $next_allocation = $lookup_allocation->allocation;
@@ -204,7 +238,8 @@ class SmsController extends Controller
                                 $lookup_allocation->update();
 
 
-                                $reply = "Participant " . $ipno . " has been randomised to " . $next_allocation . " in the " . $study . " study. The unique number for the participant is " .
+                                $reply = "Participant " . $ipno . " has been randomised to " . $next_allocation . " in the " . $study . " study and "
+                                    . Stratum::find($stratumId)->stratum . " stratum. The unique number for the participant is " .
                                     $participant_id . " . Randomised by " . $lookup_users->first_name.' '.$lookup_users->last_name . " at " . Carbon::now() . "." . "\r\n" . "#" . $next_sequence;
 
                                 Log::info("SUCCESSFUL RANDOMIZATION: ".$reply. "\n");
