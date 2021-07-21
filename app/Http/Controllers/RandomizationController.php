@@ -31,10 +31,10 @@ class RandomizationController extends Controller
             $studies = Study::all();
 
             //overall randomization rate
-            $rates = AllocationList::select(DB::raw('Date(date_randomised) as date_randomised'), DB::raw('count(*) as total'))
+            $rates = AllocationList::groupBy('date_randomised')
+                ->select(DB::raw('Date(date_randomised) as date_randomised'), DB::raw('count(*) as total'))
                 ->whereNotNull('date_randomised')
                 ->whereNotNull('participant_id')
-                ->groupBy('date_randomised')
                 ->orderBy('date_randomised', 'ASC')
                 ->get();
 
@@ -47,11 +47,11 @@ class RandomizationController extends Controller
             $studies = Study::whereIn('id', $studyIds)->get();
 
             //randomization rate spefici to that site
-            $rates = AllocationList::select(DB::raw('Date(date_randomised) as date_randomised'), DB::raw('count(*) as total'))
+            $rates = AllocationList::groupBy('date_randomised')
+                ->select(DB::raw('Date(date_randomised) as date_randomised'), DB::raw('count(*) as total'))
                 ->whereNotNull('date_randomised')
                 ->whereNotNull('participant_id')
                 ->where('site_id', auth()->user()->site_id)
-                ->groupBy('date_randomised')
                 ->orderBy('date_randomised', 'ASC')
                 ->get();
         }
