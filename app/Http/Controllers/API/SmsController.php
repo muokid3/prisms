@@ -6,6 +6,7 @@ use App\AllocationList;
 use App\Http\Controllers\Controller;
 use App\Inbox;
 use App\Sent;
+use App\Site;
 use App\Stratum;
 use App\Study;
 use App\User;
@@ -207,13 +208,18 @@ class SmsController extends Controller
 
                         } else {
                             //randomising
+
+                            $actualSite = Site::where('site_name',$site)->first();
+                            $actualSitetId = is_null($actualSite) ? 0 : $actualSite->id;
+
+
                             $alloc_seq = AllocationList::selectRaw(" MIN(sequence) AS next_sequence")
                                 ->whereNull('date_randomised')
                                 ->where('study_id',$stId)
+                                ->where('site_id',$actualSitetId)
                                 ->where('stratum_id',$stratumId)
                                 ->first();
 
-                            $next_sequence = $alloc_seq->next_sequence;
 
                             if (is_null($alloc_seq)) {
                                 $reply = "Random allocations to the " . $study . " study are no longer available. Please contact the study co-ordination centre.";
@@ -221,9 +227,13 @@ class SmsController extends Controller
                                 Log::info("RANDOMIZATION ALLOCATION LIST NOT AVAILABLE: ".$reply. "\n");
 
                             } else {
+
+                                $next_sequence = $alloc_seq->next_sequence;
+
                                 $lookup_allocation = AllocationList::where('sequence',$next_sequence)
                                     ->whereNull('date_randomised')
                                     ->where('study_id',$stId)
+                                    ->where('site_id',$actualSitetId)
                                     ->where('stratum_id',$stratumId)
                                     ->first();
 
