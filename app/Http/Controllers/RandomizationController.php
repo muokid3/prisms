@@ -36,9 +36,7 @@ class RandomizationController extends Controller
                 ->whereNotNull('date_randomised')
                 ->whereNotNull('participant_id')
                 ->orderBy('date_randomised', 'ASC')
-                //->groupBy('date_randomised')
                 ->groupBy(DB::raw('Date(date_randomised)'))
-
                 ->get();
 
             Log::info($rates);
@@ -56,7 +54,7 @@ class RandomizationController extends Controller
                 ->whereNotNull('participant_id')
                 ->where('site_id', auth()->user()->site_id)
                 ->orderBy('date_randomised', 'ASC')
-                ->groupBy(DB::raw("DATE_FORMAT(date_randomised, '%Y-%m-%d')"))
+                ->groupBy(DB::raw('Date(date_randomised)'))
                 ->get();
         }
 
