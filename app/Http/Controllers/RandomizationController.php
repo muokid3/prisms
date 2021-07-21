@@ -36,13 +36,10 @@ class RandomizationController extends Controller
                 ->whereNotNull('date_randomised')
                 ->whereNotNull('participant_id')
                 ->orderBy('date_randomised', 'ASC')
-                ->groupBy('date_randomised')
-                ->get(
-                    array(
-                        DB::raw('DATE(date_randomised) as date_randomised'),
-                        DB::raw('COUNT(*) as "total"')
-                    )
-                );
+                //->groupBy('date_randomised')
+                ->groupBy(DB::raw('Date(date_randomised)'))
+
+                ->get();
 
             Log::info($rates);
 
