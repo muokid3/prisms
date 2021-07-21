@@ -43,4 +43,7 @@ class User extends Authenticatable
     public function role() {
         return $this->belongsTo(UserGroup::class,'user_group');
     }
+    public function site() {
+        return $this->belongsTo(Site::class);
+    }
 }

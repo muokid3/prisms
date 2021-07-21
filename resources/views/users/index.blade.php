@@ -23,6 +23,7 @@
                     {data: 'first_name', name: 'first_name'},
                     {data: 'last_name', name: 'last_name'},
                     {data: 'role', name: 'role'},
+                    {data: 'site', name: 'site'},
                     {data: 'phone_no', name: 'phone_no'},
                     {data: 'email', name: 'email'},
                     {data: 'actions', name: 'actions'},
@@ -157,6 +158,7 @@
                             <th>First Name</th>
                             <th>Last Name</th>
                             <th>Role</th>
+                            <th>Site</th>
                             <th>Phone No.</th>
                             <th>Email</th>
                             <th>Actions</th>
@@ -168,6 +170,7 @@
                             <th>First Name</th>
                             <th>Last Name</th>
                             <th>Role</th>
+                            <th>Site</th>
                             <th>Phone No.</th>
                             <th>Email</th>
                             <th>Actions</th>

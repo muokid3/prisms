@@ -202,7 +202,8 @@ class ApiController extends Controller
             $siteStudies = SiteStudy::orderBy('id', 'desc')->get();
 
         }else {
-            $siteStudies = SiteStudy::where('study_coordinator', auth()->user()->id)->orderBy('id', 'desc')->get();
+            $siteStudies = SiteStudy::where('site_id', auth()->user()->site_id)->orderBy('id', 'desc')->get();
+//            $siteStudies = SiteStudy::where('study_coordinator', auth()->user()->id)->orderBy('id', 'desc')->get();
         }
 
         return new GenericCollection($siteStudies);

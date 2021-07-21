@@ -52,6 +52,9 @@ class UserController extends Controller
             ->addColumn('phone',function ($user) {
                 return $user->mobile_no;
             })
+            ->addColumn('site',function ($user) {
+                return optional($user->site)->site_name;
+            })
             ->editColumn('created_by', function($user) {
                 if ($user->masterfile)
                     return optional(optional($user->masterfile)->creator)->email;
