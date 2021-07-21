@@ -173,6 +173,9 @@ class SmsController extends Controller
                     $phone_no = $source;
                 }
 
+                if (substr($phone_no, 0, 1) === '0') {
+                    $phone_no = "254".ltrim($phone_no, "0");
+                }
                 Log::info("received randomisation request from phone ::::::::::::".$phone_no);
 
                 $lookup_users = User::where('active',1)->where('phone_no', $phone_no)->first();
