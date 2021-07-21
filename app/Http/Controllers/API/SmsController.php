@@ -240,22 +240,29 @@ class SmsController extends Controller
                                     ->where('stratum_id',$stratumId)
                                     ->first();
 
-                                $next_allocation = $lookup_allocation->allocation;
+                                if (is_null($lookup_allocation)){
+                                    $reply = "Random allocations to the " . $study . " study are no longer available. Please contact the study co-ordination centre.";
 
-                                $participant_id = 'BLA' . mt_rand(100, 999);
+                                    Log::info("RANDOMIZATION ALLOCATION LIST NOT AVAILABLE: ".$reply. "\n");
+                                }else{
+                                    $next_allocation = $lookup_allocation->allocation;
 
-                                $lookup_allocation->participant_id = $participant_id;
-                                $lookup_allocation->ipno = $ipno;
-                                $lookup_allocation->user_id = $lookup_users->id;
-                                $lookup_allocation->date_randomised = Carbon::now();
-                                $lookup_allocation->update();
+                                    $participant_id = 'BLA' . mt_rand(100, 999);
+
+                                    $lookup_allocation->participant_id = $participant_id;
+                                    $lookup_allocation->ipno = $ipno;
+                                    $lookup_allocation->user_id = $lookup_users->id;
+                                    $lookup_allocation->date_randomised = Carbon::now();
+                                    $lookup_allocation->update();
 
 
-                                $reply = "Participant " . $ipno . " has been randomised to " . $next_allocation . " in the " . $study . " study and "
-                                    . Stratum::find($stratumId)->stratum . " stratum. The unique number for the participant is " .
-                                    $participant_id . " . Randomised by " . $lookup_users->first_name.' '.$lookup_users->last_name . " at " . Carbon::now() . "." . "\r\n" . "#" . $next_sequence;
+                                    $reply = "Participant " . $ipno . " has been randomised to " . $next_allocation . " in the " . $study . " study and "
+                                        . Stratum::find($stratumId)->stratum . " stratum. The unique number for the participant is " .
+                                        $participant_id . " . Randomised by " . $lookup_users->first_name.' '.$lookup_users->last_name . " at " . Carbon::now() . "." . "\r\n" . "#" . $next_sequence;
 
-                                Log::info("SUCCESSFUL RANDOMIZATION: ".$reply. "\n");
+                                    Log::info("SUCCESSFUL RANDOMIZATION: ".$reply. "\n");
+                                }
+
                             }
                         }
 
