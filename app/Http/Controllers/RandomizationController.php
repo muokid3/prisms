@@ -12,6 +12,7 @@ use Carbon\Carbon;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Yajra\DataTables\Facades\DataTables;
 
 class RandomizationController extends Controller
@@ -36,6 +37,8 @@ class RandomizationController extends Controller
                 ->groupBy('date_randomised')
                 ->orderBy('date_randomised', 'ASC')
                 ->get();
+
+            Log::info($rates);
 
         }else{
 
