@@ -26,6 +26,10 @@ Route::group([
     Route::post('sms/delivery_report', 'SmsController@delivery_report');
     Route::get('sms/randomise', 'SmsController@randomise');
 
+    Route::get('reminders/day30', 'RemindersController@day30');
+    Route::get('reminders/day5', 'RemindersController@day5');
+
+
 
 });
 
