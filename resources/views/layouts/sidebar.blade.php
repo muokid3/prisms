@@ -93,14 +93,14 @@
                 @endif
 
 
-{{--                @if(auth()->user()->role->has_perm([13]))--}}
+                @if(auth()->user()->role->has_perm([13]))
 
-{{--                    <div class="sb-sidenav-menu-heading">RedCap</div>--}}
-{{--                    <a class="nav-link" href="{{url('redcap_hospitals')}}">--}}
-{{--                        <div class="sb-nav-link-icon"><i class="fas fa-university"></i></div>--}}
-{{--                        RedCap Hospitals--}}
-{{--                    </a>--}}
-{{--                @endif--}}
+                    <div class="sb-sidenav-menu-heading">RedCap</div>
+                    <a class="nav-link" href="{{url('redcap_hospitals')}}">
+                        <div class="sb-nav-link-icon"><i class="fas fa-university"></i></div>
+                        RedCap Hospitals
+                    </a>
+                @endif
 
                 @if(auth()->user()->role->has_perm([1]))
 

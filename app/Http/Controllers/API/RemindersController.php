@@ -112,7 +112,10 @@ class RemindersController extends Controller
             'php',
             null,
             [450001,450002,450003],
-            ["id","date_today","study_id","hosp_id","ipno","date_adm"]
+            ["id","date_today","study_id","hosp_id","ipno","date_adm"],
+            null,
+            ['preliminary_arm_1']
+
         );
 
 //        foreach ($records as $record){

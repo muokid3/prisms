@@ -109,6 +109,10 @@ Route::group(['middleware' => ['auth']], function () {
         Route::put('redcap_hospitals', 'RedcapController@update_redcap_hospital_details');//->middleware('perm:1');
         Route::post('redcap_hospitals/delete', 'RedcapController@delete_redcap_hospital');//->middleware('perm:1');
         Route::get('redcap_hospitals/details/{id}','RedcapController@redcap_hospital_details');//->middleware('perm:1');
+        Route::get('ajax/redcap_hospitals/contacts/{id}','RedcapController@hospitalContactsDT');//->middleware('perm:1');
+        Route::post('contacts/upload','RedcapController@upload_hospital_contacts');//->middleware('perm:1');
+        Route::delete('contacts/{_id}', 'RedcapController@delete_hosp_contact')->name('delete-hosp-contact');
+
 
     });
 
