@@ -10,6 +10,7 @@ use App\UserGroup;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Log;
+use IU\PHPCap\RedCapProject;
 
 class RemindersController extends Controller
 {
@@ -95,6 +96,32 @@ class RemindersController extends Controller
                 $sent->saveOrFail();
             }
         }
+
+    }
+
+    public function redcap_day30()
+    {
+        $apiUrl = 'https://searchtrial.kemri-wellcome.org/api/';
+
+        $apiToken = '8E77FB323E730636E6204C516ECC74B3';
+
+        $project = new RedCapProject($apiUrl, $apiToken);
+        $projectInfo = $project->exportProjectInfo();
+
+        $records = $project->exportRecords(
+            'php',
+            null,
+            [450001,450002,450003],
+            ["id","date_today","study_id","hosp_id","ipno","date_adm"]
+        );
+
+//        foreach ($records as $record){
+//            Log::info("IPNO:::".$record['ipno']."  DATE ADM:::". $record['date_adm']);
+//        }
+
+        Log::info($records);
+
+        //print_r($records);
 
     }
 

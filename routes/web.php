@@ -100,6 +100,18 @@ Route::group(['middleware' => ['auth']], function () {
     Route::get('ajax/audit_logs', 'UserController@auditLogsDT')->name('audit-logs-dt')->middleware('perm:11');
 
 
+    //redcap hospitals
+
+    Route::group(['middleware' => ['perm:13']], function () {
+        Route::get('/redcap_hospitals', 'RedcapController@redcap_hospitals');//->middleware('perm:1');
+        Route::post('/redcap_hospitals', 'RedcapController@new_redcap_hospital');//->middleware('perm:1');
+        Route::get('redcap_hospitals/{_id}', 'RedcapController@get_redcap_hospital_details');//->middleware('perm:1');
+        Route::put('redcap_hospitals', 'RedcapController@update_redcap_hospital_details');//->middleware('perm:1');
+        Route::post('redcap_hospitals/delete', 'RedcapController@delete_redcap_hospital');//->middleware('perm:1');
+        Route::get('redcap_hospitals/details/{id}','RedcapController@redcap_hospital_details');//->middleware('perm:1');
+
+    });
+
     Route::group(['middleware' => ['perm:1']], function () {
 
         //USERS

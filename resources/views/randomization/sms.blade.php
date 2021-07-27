@@ -42,7 +42,7 @@
                 "order": [[0, "desc"]],
                 "createdRow": function( row, data, dataIndex ) {
                     //console.log(data['actual_latency']);
-                    if (data['actual_latency'] >= 30) {
+                    if (data['actual_latency'] >= 60) {
                         $(row).addClass('bg-danger');
 
                     }

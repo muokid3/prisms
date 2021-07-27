@@ -68,6 +68,10 @@ class PermissionsSeeder extends Seeder
         $permission->name = 'Send bulk SMS'; //12
         $permission->save();
 
+        $permission = new \App\Permission();
+        $permission->name = 'Manage Redcap Site Notifications'; //13
+        $permission->save();
+
 
 
 

@@ -485,7 +485,8 @@ class ApiController extends Controller
         $rates = AllocationList::select(DB::raw('Date(date_randomised) as date_randomised'), DB::raw('count(*) as total'))
             ->whereNotNull('date_randomised')
             ->whereNotNull('participant_id')
-            ->groupBy('date_randomised')
+            //->groupBy('date_randomised')
+            ->groupBy(DB::raw('Date(date_randomised)'))
             ->orderBy('date_randomised', 'ASC')
             ->limit(14)
             ->get();

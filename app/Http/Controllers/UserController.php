@@ -376,7 +376,7 @@ class UserController extends Controller
 
         AuditTrail::create([
             'created_by' => auth()->user()->id,
-            'action' => 'Created user group #'.$request->id.' ('.$request->name.')',
+            'action' => 'Updated user group #'.$request->id.' ('.$request->name.')',
         ]);
 
         Session::flash("success", "Group has been updated");
