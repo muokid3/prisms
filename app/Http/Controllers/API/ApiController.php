@@ -206,7 +206,42 @@ class ApiController extends Controller
 //            $siteStudies = SiteStudy::where('study_coordinator', auth()->user()->id)->orderBy('id', 'desc')->get();
         }
 
-        return new GenericCollection($siteStudies);
+        //this is a dirty way of doing it. I'm not proud of myself
+        $arr = array();
+        foreach ($siteStudies as $siteStudy){
+            $strataIds = AllocationList::distinct()
+                ->where('site_id', $siteStudy->site_id)
+                ->where('study_id', $siteStudy->study_id)
+                ->get(['stratum_id']);
+
+            $arr2 = array();
+
+            foreach ($strataIds as $strataId){
+                $strat = Stratum::find($strataId->stratum_id);
+
+                if (!is_null($strat))
+                    array_push($arr2,$strat->stratum);
+            }
+
+            array_push($arr,[
+                "id"=>$siteStudy->id,
+                "site_id"=>$siteStudy->site_id,
+                "study_id"=>$siteStudy->study_id,
+                "study_coordinator"=>$siteStudy->study_coordinator,
+                "date_initiated"=>$siteStudy->date_initiated,
+                "status"=>$siteStudy->status,
+                "study_name"=>optional($siteStudy->study)->study,
+                "study_detail"=>optional($siteStudy->study)->study_detail,
+                "site_name"=>optional($siteStudy->site)->site_name,
+                "strata"=>$arr2,
+                ]);
+        }
+
+        return response()->json([
+            'success' => true,
+            'data' => $arr,
+        ]) ;
+//        return new GenericCollection($siteStudies);
     }
 
     //end of studies
