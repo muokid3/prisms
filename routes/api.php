@@ -27,9 +27,15 @@ Route::group([
     Route::get('sms/randomise', 'SmsController@randomise');
 
     Route::get('reminders/day30', 'RemindersController@day30');
-    Route::get('reminders/redcap_day30', 'RemindersController@redcap_day30');
-
     Route::get('reminders/day5', 'RemindersController@day5');
+
+
+
+    Route::get('reminders/redcap_day30', 'RemindersController@redcap_day30');
+    Route::get('reminders/redcap_day29', 'RemindersController@redcap_day29');
+    Route::get('reminders/redcap_day5', 'RemindersController@redcap_day5');
+    Route::get('reminders/redcap_day4', 'RemindersController@redcap_day4');
+
 
 
 

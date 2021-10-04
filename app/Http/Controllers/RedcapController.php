@@ -264,6 +264,53 @@ class RedcapController extends Controller
 
     }
 
+
+    public function create_hospital_contacts(Request  $request) {
+        $data = request()->validate([
+            'hospital_id' => 'required',
+            'user_role' => 'required',
+            'first_name' => 'required',
+            'full_name' => 'required',
+            'phone_no' => 'required',
+        ]);
+
+
+        $phoneNo =$request->phone_no;
+
+        if (substr($phoneNo, 0, 1) === '0') {
+            $phoneNo = "+254".ltrim($phoneNo, "0");
+        }
+
+        if (substr($phoneNo, 0, 1) === '7') {
+            $phoneNo = "+254".$phoneNo;
+        }
+
+        if (substr($phoneNo, 0, 1) === '2') {
+            $phoneNo = "+".$phoneNo;
+        }
+
+
+        $siteContact = new SiteContact();
+        $siteContact->redcap_site_id = $request->hospital_id;
+        $siteContact->user_group = $request->user_role;
+        $siteContact->contact_first_name = $request->first_name;
+        $siteContact->contact_full_name = $request->full_name;;
+        $siteContact->contact_phone_no = $phoneNo;
+        $siteContact->saveOrFail();
+
+        $message = 'Contact list has been uploaded successfully.';
+        Session::flash('success',$message);
+
+        AuditTrail::create([
+            'created_by' => auth()->user()->id,
+            'action' => 'Uploaded contact list for Hospital: '
+                .' ('.optional(RedcapSite::find($request->hospital_id))->redcap_hospital_name.')',
+        ]);
+
+        return redirect()->back();
+
+    }
+
     public function delete_hosp_contact($id)
     {
         try {

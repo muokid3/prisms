@@ -107,8 +107,15 @@
                             <div class="nav-tabs-wrapper">
                                 <ul class="nav nav-tabs" data-tabs="tabs">
                                     <li class="nav-item">
-                                        <a class="nav-link active" href="#perms" data-toggle="tab">
-                                            <i class="fa fa-tools"></i> Hospital Contacts
+                                        <a class="nav-link active" href="#create" data-toggle="tab">
+                                            <i class="fa fa-tools"></i> Create Contact
+                                            <div class="ripple-container"></div>
+                                        </a>
+                                    </li>
+
+                                    <li class="nav-item">
+                                        <a class="nav-link" href="#upload" data-toggle="tab">
+                                            <i class="fa fa-tools"></i> Upload Contacts
                                             <div class="ripple-container"></div>
                                         </a>
                                     </li>
@@ -118,7 +125,87 @@
                     </div>
                     <div class="card-body">
                         <div class="tab-content">
-                            <div class="tab-pane active" id="perms">
+                            <div class="tab-pane active" id="create">
+                                <table class="table  ">
+                                    <thead>
+                                    <tr>
+                                        <th>Create contact</th>
+                                        <th></th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+
+                                    <tr>
+                                        <td>
+{{--                                            <div class="toolbar">--}}
+{{--                                                <a href="{{url('assets/contacts.csv')}}" class="btn btn-primary btn-sm" >--}}
+{{--                                                    <i class="fa fa-download"></i> Download sample file--}}
+{{--                                                </a>--}}
+{{--                                            </div>--}}
+
+                                            <form id="userform" action="{{ url('contacts/create') }}" method="post" id="user-form" enctype="multipart/form-data">
+                                                {{ csrf_field() }}
+                                                <input type="hidden" name="_method" id="user-spoof-input" value="PUT" disabled/>
+
+                                                <div class="row">
+                                                    <input type="hidden" name="hospital_id" value="{{$rs->id}}">
+                                                    <div class="col-md-12">
+                                                        <div class="form-group ">
+                                                            <label class="control-label" for="user_role" style="line-height: 6px;">User Role</label>
+
+                                                            <select class="dropdown form-control" data-style="select-with-transition" title="Choose User Role" tabindex="-98"
+                                                                    name="user_role" id="user_role" required>
+                                                                <option value="">Select role</option>
+
+                                                                @foreach( \App\UserGroup::all() as $user_role)
+                                                                    <option value="{{ $user_role->id  }}">{{ $user_role->name }}</option>
+                                                                @endforeach
+                                                            </select>
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="col-md-12">
+                                                        <div class="form-group">
+                                                            <label class="control-label" for="file">Phone No</label>
+                                                            <input type="number" name="phone_no"  class="form-control" required />
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="col-md-12">
+                                                        <div class="form-group">
+                                                            <label class="control-label" for="first_name">First Name </label>
+                                                            <input type="text" name="first_name"  class="form-control" required />
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="col-md-12">
+                                                        <div class="form-group">
+                                                            <label class="control-label" for="full_name">Full Name </label>
+                                                            <input type="text" name="full_name"  class="form-control" required />
+                                                        </div>
+                                                    </div>
+
+                                                </div>
+
+
+
+                                                <input type="hidden" name="id" id="id"/>
+                                                <div class="form-group">
+                                                    <button class="btn btn-success" id="save-brand"><i class="fa fa-save"></i> Save</button>
+                                                </div>
+
+                                            </form>
+
+                                        </td>
+                                    </tr>
+
+
+                                    </tbody>
+
+                                </table>
+                            </div>
+
+                            <div class="tab-pane" id="upload">
                                 <table class="table  ">
                                     <thead>
                                     <tr>
