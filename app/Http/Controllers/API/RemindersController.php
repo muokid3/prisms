@@ -220,13 +220,17 @@ class RemindersController extends Controller
             if (Carbon::parse($date_adm)->addDays(29)->isCurrentDay()){
                 $scheduledDate = Carbon::parse($date_adm)->addDays(30)->isoFormat('MMM Do YYYY');
 
+
                 $site = RedcapSite::where('redcap_hospital_id',$hosp_id)->first();
                 $siteName = is_null($site) ? "NULL" : $site->redcap_hospital_name;
+                $id = is_null($site) ? 0 : $site->id;
+
 
                 Log::info("DATE ADM::".$date_adm." HOSP ID::".$hosp_id." HOSP::".$siteName." STUDY ID::".$study_id );
 
 
-                $siteContacts = SiteContact::where('redcap_site_id', $hosp_id)->get();
+                $siteContacts = SiteContact::where('redcap_site_id', $id)->get();
+                Log::info("sitecontact count:::".$siteContacts->count());
                 foreach ($siteContacts as $siteContact){
 
                     if ($siteContact->user_group == 4){
@@ -302,13 +306,17 @@ class RemindersController extends Controller
             if (Carbon::parse($date_adm)->addDays(5)->isCurrentDay()){
                 $scheduledDate = Carbon::parse($date_adm)->addDays(5)->isoFormat('MMM Do YYYY');
 
+
                 $site = RedcapSite::where('redcap_hospital_id',$hosp_id)->first();
                 $siteName = is_null($site) ? "NULL" : $site->redcap_hospital_name;
+                $id = is_null($site) ? 0 : $site->id;
+
 
                 Log::info("DATE ADM::".$date_adm." HOSP ID::".$hosp_id." HOSP::".$siteName." STUDY ID::".$study_id );
 
 
-                $siteContacts = SiteContact::where('redcap_site_id', $hosp_id)->get();
+                $siteContacts = SiteContact::where('redcap_site_id', $id)->get();
+                Log::info("sitecontact count:::".$siteContacts->count());
                 foreach ($siteContacts as $siteContact){
 
                     if ($siteContact->user_group == 4){
@@ -384,13 +392,17 @@ class RemindersController extends Controller
             if (Carbon::parse($date_adm)->addDays(4)->isCurrentDay()){
                 $scheduledDate = Carbon::parse($date_adm)->addDays(5)->isoFormat('MMM Do YYYY');
 
+
                 $site = RedcapSite::where('redcap_hospital_id',$hosp_id)->first();
                 $siteName = is_null($site) ? "NULL" : $site->redcap_hospital_name;
+                $id = is_null($site) ? 0 : $site->id;
+
 
                 Log::info("DATE ADM::".$date_adm." HOSP ID::".$hosp_id." HOSP::".$siteName." STUDY ID::".$study_id );
 
 
-                $siteContacts = SiteContact::where('redcap_site_id', $hosp_id)->get();
+                $siteContacts = SiteContact::where('redcap_site_id', $id)->get();
+                Log::info("sitecontact count:::".$siteContacts->count());
                 foreach ($siteContacts as $siteContact){
 
                     if ($siteContact->user_group == 4){
