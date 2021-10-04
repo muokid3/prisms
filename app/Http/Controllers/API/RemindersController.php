@@ -129,16 +129,19 @@ class RemindersController extends Controller
             $study_id = $record['study_id'];
 
 
-            if (Carbon::parse($date_adm)->addDays(30)->isCurrentDay()){
+            if (Carbon::parse($date_adm)->addDays(5)->isCurrentDay()){
                 $scheduledDate = Carbon::parse($date_adm)->addDays(30)->isoFormat('MMM Do YYYY');
 
                 $site = RedcapSite::where('redcap_hospital_id',$hosp_id)->first();
                 $siteName = is_null($site) ? "NULL" : $site->redcap_hospital_name;
+                $id = is_null($site) ? 0 : $site->id;
+
 
                 Log::info("DATE ADM::".$date_adm." HOSP ID::".$hosp_id." HOSP::".$siteName." STUDY ID::".$study_id );
 
 
-                $siteContacts = SiteContact::where('redcap_site_id', $hosp_id)->get();
+                $siteContacts = SiteContact::where('redcap_site_id', $id)->get();
+                Log::info("sitecontact count:::".$siteContacts->count());
                 foreach ($siteContacts as $siteContact){
 
                     if ($siteContact->user_group == 4){
@@ -158,7 +161,8 @@ class RemindersController extends Controller
 
 
 
-                    $result_sms = send_sms("SEARCHTrial",$message,$siteContact->contact_phone_no,rand());
+                    $result_sms = send_sms("SEARCHTrial",$message,'+254713653112',rand());
+//                    $result_sms = send_sms("SEARCHTrial",$message,$siteContact->contact_phone_no,rand());
 
                     $sent = new Sent();
                     $sent->timestamp = Carbon::now();
@@ -167,6 +171,8 @@ class RemindersController extends Controller
                     $sent->status = $result_sms["message"];
                     $sent->unique_id = array_key_exists('data', $result_sms) ? $result_sms["data"]["uniqueId"] : null;
                     $sent->saveOrFail();
+
+//                    Log::info($result_sms);
 
                 }
             }
