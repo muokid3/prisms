@@ -161,8 +161,8 @@ class RemindersController extends Controller
 
 
 
-                    $result_sms = send_sms("SEARCHTrial",$message,'+254713653112',rand());
-//                    $result_sms = send_sms("SEARCHTrial",$message,$siteContact->contact_phone_no,rand());
+//                    $result_sms = send_sms("SEARCHTrial",$message,'+254713653112',rand());
+                    $result_sms = send_sms("SEARCHTrial",$message,$siteContact->contact_phone_no,rand());
 
                     $sent = new Sent();
                     $sent->timestamp = Carbon::now();
