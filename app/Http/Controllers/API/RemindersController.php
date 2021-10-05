@@ -129,7 +129,7 @@ class RemindersController extends Controller
             $study_id = $record['study_id'];
 
 
-            if (Carbon::parse($date_adm)->addDays(5)->isCurrentDay()){
+            if (Carbon::parse($date_adm)->addDays(30)->isCurrentDay()){
                 $scheduledDate = Carbon::parse($date_adm)->addDays(30)->isoFormat('MMM Do YYYY');
 
                 $site = RedcapSite::where('redcap_hospital_id',$hosp_id)->first();
