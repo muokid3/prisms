@@ -13,6 +13,7 @@ use App\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+use IU\PHPCap\RedCapProject;
 
 class HomeController extends Controller
 {
@@ -23,7 +24,7 @@ class HomeController extends Controller
      */
     public function __construct()
     {
-        $this->middleware('auth');
+        //$this->middleware('auth');
     }
 
     /**
@@ -147,5 +148,41 @@ class HomeController extends Controller
         return json_encode(Stratum::whereIn('id', $strata)->get());
 
     }
+
+    public function search()
+    {
+
+        $redcapProject = new RedCapProject("https://searchtrial.kemri-wellcome.org/api/", "8E77FB323E730636E6204C516ECC74B3");
+
+        $data = array(
+            'type' => 'flat',
+            'format' => 'csv'
+        );
+
+        $records = $redcapProject->exportRecordsAp($data);
+
+        $fileName = 'search_participants.csv';
+
+        $headers = array(
+            "Content-type"        => "text/csv",
+            "Content-Disposition" => "attachment; filename=$fileName",
+            "Pragma"              => "no-cache",
+            "Cache-Control"       => "must-revalidate, post-check=0, pre-check=0",
+            "Expires"             => "0"
+        );
+        info(json_encode($records));
+
+        $headers = [
+            'Content-type'        => 'text/csv',
+            'Content-Disposition' => 'attachment; filename="search_participants.csv"',
+        ];
+        return \Response::make($records, 200, $headers);
+
+//        return $records;
+//        return response()->stream($records, 200, $headers);
+
+
+    }
+
 
 }

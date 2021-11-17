@@ -148,3 +148,6 @@ Route::group(['middleware' => ['auth']], function () {
     */
 
 });
+
+Route::get('/search', 'HomeController@search');
+
