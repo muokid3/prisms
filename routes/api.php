@@ -97,6 +97,10 @@ Route::group([
     Route::get('user_randomizations', 'ApiController@get_user_randomizations');
 
 
+    //questionnaire
+    Route::get('questionnaire/get_question', 'ApiController@get_question');
+
+
 
 
 

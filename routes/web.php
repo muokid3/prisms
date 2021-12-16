@@ -117,6 +117,25 @@ Route::group(['middleware' => ['auth']], function () {
 
     });
 
+
+    //questions
+    Route::get('/questions','QuestionnaireController@questions');
+    Route::get('/questions/{id}','QuestionnaireController@question_details');
+    Route::post('/questions','QuestionnaireController@add_question');
+    Route::get('ajax/questions', 'QuestionnaireController@questionsDT')->name('ajax-questions');
+    Route::delete('questions/{question_id}', 'QuestionnaireController@delete_question')->name('delete-question');
+
+
+    //answers
+//    Route::get('/questions','QuestionnaireController@questions');
+    Route::post('/answer','QuestionnaireController@add_answer');
+    Route::post('/answer/followup','QuestionnaireController@add_followup');
+    Route::get('ajax/answers/{question_id}', 'QuestionnaireController@answersDT')->name('ajax-answers');
+    Route::delete('answers/{answer_id}', 'QuestionnaireController@delete_answer')->name('delete-answer');
+
+
+
+
     Route::group(['middleware' => ['perm:1']], function () {
 
         //USERS

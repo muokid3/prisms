@@ -102,6 +102,11 @@
                     </a>
                 @endif
 
+                <a class="nav-link" href="{{url('questions')}}">
+                    <div class="sb-nav-link-icon"><i class="fas fa-poll"></i></div>
+                    Questionnaire
+                </a>
+
                 @if(auth()->user()->role->has_perm([1]))
 
                     <div class="sb-sidenav-menu-heading">Users</div>

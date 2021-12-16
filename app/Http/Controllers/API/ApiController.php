@@ -3,10 +3,13 @@
 namespace App\Http\Controllers\API;
 
 use App\AllocationList;
+use App\Answer;
 use App\AuditTrail;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\GenericCollection;
 use App\Inbox;
+use App\Question;
+use App\Response;
 use App\Sent;
 use App\Site;
 use App\SiteStudy;
@@ -556,5 +559,42 @@ class ApiController extends Controller
             'message' => $message
         ], 200);
     }
+
+    //questionnaire
+    public function get_question()
+    {
+        $answered = Response::where('user_id',auth()->user()->id)->pluck('question_id');
+        return new GenericCollection(Question::whereNotIn('id',$answered)->paginate(1));
+    }
+
+    public function answer_question(Request $request)
+    {
+
+        $this->validate($request, [
+            'questionnaire_id' => 'required|exists:questionnaires,id',
+            'section_id' => 'required|exists:sections,id',
+            'question_id' => 'required|exists:questions,id',
+            'question_answer_id' => 'required|exists:question_answers,id',
+            'facility_id' => 'required|exists:facilities,id',
+        ]);
+
+        $answer = new Answer();
+        $answer->questionnaire_id = $request->questionnaire_id;
+        $answer->section_id = $request->section_id;
+        $answer->question_id = $request->question_id;
+        $answer->question_answer_id = $request->question_answer_id;
+        $answer->facility_id = $request->facility_id;
+        $answer->details = $request->details;
+        $answer->user_id = auth()->id();
+        $answer->saveOrFail();
+
+
+        return [
+            'success' => true,
+            'message' => "Answer recorded successfully",
+        ];
+    }
+
+
 
 }
