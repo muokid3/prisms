@@ -99,6 +99,7 @@ Route::group([
 
     //questionnaire
     Route::get('questionnaire/get_question', 'ApiController@get_question');
+    Route::post('questionnaire/post_answer', 'ApiController@post_answer');
 
 
 

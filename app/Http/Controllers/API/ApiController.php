@@ -5,6 +5,8 @@ namespace App\Http\Controllers\API;
 use App\AllocationList;
 use App\Answer;
 use App\AuditTrail;
+use App\FollowupQuestion;
+use App\FollowupResponse;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\GenericCollection;
 use App\Inbox;
@@ -567,26 +569,47 @@ class ApiController extends Controller
         return new GenericCollection(Question::whereNotIn('id',$answered)->paginate(1));
     }
 
-    public function answer_question(Request $request)
+    public function post_answer(Request $request)
     {
 
         $this->validate($request, [
-            'questionnaire_id' => 'required|exists:questionnaires,id',
-            'section_id' => 'required|exists:sections,id',
             'question_id' => 'required|exists:questions,id',
-            'question_answer_id' => 'required|exists:question_answers,id',
-            'facility_id' => 'required|exists:facilities,id',
         ]);
 
-        $answer = new Answer();
-        $answer->questionnaire_id = $request->questionnaire_id;
-        $answer->section_id = $request->section_id;
-        $answer->question_id = $request->question_id;
-        $answer->question_answer_id = $request->question_answer_id;
-        $answer->facility_id = $request->facility_id;
-        $answer->details = $request->details;
-        $answer->user_id = auth()->id();
-        $answer->saveOrFail();
+        $question = Question::find($request->question_id);
+        if ($question->type == "OPEN"){
+            $resp = new Response();
+            $resp->question_id = $request->question_id;
+            $resp->user_id = auth()->user()->id;
+            $resp->details = $request->open_ended_answer;
+            $resp->saveOrFail();
+        }else if ($question->type == "CHOICE"){
+            if ($question->answer_count == "SINGLE"){
+
+                $resp = new Response();
+                $resp->question_id = $request->question_id;
+                $resp->user_id = auth()->user()->id;
+                $resp->answer_id = $request->answer_id;
+                $resp->details = $request->details;
+                $resp->saveOrFail();
+
+                $followupQue = FollowupQuestion::where('answer_id',$request->answer_id)->first();
+                if (!is_null($followupQue)){
+                    $followupResp = new FollowupResponse();
+                    $followupResp->followup_question_id = $followupQue->id;
+                    $followupResp->response = $request->follow_up_answer;
+                    $followupResp->saveOrFail();
+                }
+
+            }elseif ($question->answer_count == "MULTIPLE"){
+                $resp = new Response();
+                $resp->question_id = $request->question_id;
+                $resp->user_id = auth()->user()->id;
+                $resp->answer_id = $request->answers_ids;
+                $resp->saveOrFail();
+            }
+        }
+
 
 
         return [
