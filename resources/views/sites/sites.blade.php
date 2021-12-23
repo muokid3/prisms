@@ -12,6 +12,7 @@
                 columns: [ // datatable columns
                     {data: 'id', name: 'id'},
                     {data: 'site_name', name: 'site_name'},
+                    {data: 'prefix', name: 'prefix'},
                     {data: 'studies', name: 'studies'},
                     {data: 'created_at', name: 'created_at'},
                     {data: 'actions', name: 'actions'},
@@ -69,6 +70,7 @@
                             console.log(data);
                             // populate the modal fields using data from the server
                             $('#site_name').val(data['site_name']);
+                            $('#prefix').val(data['prefix']);
                             $('#id').val(data['id']);
 
                             // set the update url
@@ -133,6 +135,7 @@
                         <tr>
                             <th>ID</th>
                             <th>Name</th>
+                            <th>Prefix</th>
                             <th>Studies</th>
                             <th>Created At</th>
                             <th>Actions</th>
@@ -142,6 +145,7 @@
                         <tr>
                             <th>ID</th>
                             <th>Name</th>
+                            <th>Prefix</th>
                             <th>Studies</th>
                             <th>Created At</th>
                             <th>Actions</th>
@@ -170,6 +174,13 @@
                                 <div class="form-group">
                                     <label class="control-label" for="site_name">Site Name</label>
                                     <input type="text" value="{{ old('site_name') }}" class="form-control" id="site_name" name="site_name" required />
+                                </div>
+                            </div>
+
+                            <div class="col-md-12">
+                                <div class="form-group">
+                                    <label class="control-label" for="site_name">Prefix</label>
+                                    <input type="text" value="{{ old('prefix') }}" class="form-control" id="prefix" name="prefix" required />
                                 </div>
                             </div>
 

@@ -284,6 +284,7 @@ class SitesController extends Controller
 
         $data = request()->validate([
             'site_name' => 'required|max:255|unique:sites,site_name,'.$request->id,
+            'prefix' => 'required|max:255|unique:sites,prefix,'.$request->id,
             'id' => 'required',
         ]);
 
@@ -291,6 +292,7 @@ class SitesController extends Controller
 
         $site = Site::find($request->id);
         $site->site_name = $request->site_name;
+        $site->prefix = $request->prefix;
         $site->update();
 
         AuditTrail::create([
@@ -321,6 +323,7 @@ class SitesController extends Controller
     public  function create_site(Request  $request){
         $data = request()->validate([
             'site_name'  => 'required',
+            'prefix'  => 'required',
         ]);
 
         $exists = Site::where('site_name', $request->site_name)->first();
@@ -328,6 +331,7 @@ class SitesController extends Controller
         if (is_null($exists)){
             $site = new Site();
             $site->site_name = $request->site_name;
+            $site->prefix = $request->prefix;
             $site->saveOrFail();
 
             AuditTrail::create([
