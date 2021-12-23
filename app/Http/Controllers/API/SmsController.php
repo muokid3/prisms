@@ -101,7 +101,7 @@ class SmsController extends Controller
 
             Log::info("A message from " . $source . " was updated successfully stored: Processing at " .Carbon::now());
 
-            $user = User::where('phone_no',$source)->first();
+//            $user = User::where('phone_no',$source)->first();
 
 //            if (is_null($user)){
 //                $reply = "The number " . $source . " does not belong to an active user who is authorised to randomise participants study on PRISMS. Contact " . Config::get('prisms.OPERATOR_SUPERUSER') . "for more details";
@@ -121,7 +121,8 @@ class SmsController extends Controller
 
                 Log::info("INCORRECT MESSAGE FORMAT: ".$reply. "\n");
 
-            }elseif(strtolower($message[0]) != strtolower("randomise")) {
+            }
+            elseif(strtolower($message[0]) != strtolower("randomise")) {
 
                 $inbox->status = 44;
                 $inbox->update();
@@ -129,7 +130,8 @@ class SmsController extends Controller
                 $reply = "Incorrect message format; use:" . "\r\n" . "\r\n" . "randomise [ipno] to [studyID] [siteID]" . "\n" . "\n" . "or:" . "\n" . "\n" . "randomise [ipno] to [studyID] [siteID] [phoneNO]" . "\r\n" . "\r\n" . "without the straight brackets. You may also add your phone number at the end of the message if using an authorised phone that does not belong to you.";
                 Log::info("INCORRECT MESSAGE FORMAT: ".$reply. "\n");
 
-            } else{
+            }
+            else{
 
                 $strat = "";
 
@@ -145,11 +147,16 @@ class SmsController extends Controller
                     $study = $message[3];
                     $i5 = $message[5];
 
-                    if (substr($i5, 0, 5) == "strat"){
-                        $str_arr = explode (":", $i5);
-                        $strat =  sizeof($str_arr) > 1 ? $str_arr[1] : "";
+//                    if (substr($i5, 0, 5) == "strat"){
+//                        $str_arr = explode (":", $i5);
+//                        $strat =  sizeof($str_arr) > 1 ? $str_arr[1] : "";
+//                        $phone_no = $source;
+//                    }
+
+                    if ($i5 == "supportive"){
+                        $strat =  "supportive";
                         $phone_no = $source;
-                    }else{
+                    } else{
                         $phone_no = $message[5];
                     }
 
@@ -162,9 +169,12 @@ class SmsController extends Controller
                     $phone_no = $message[5];
                     $i6 = $message[6];
 
-                    if (substr($i6, 0, 5) == "strat"){
-                        $str_arr = explode (":", $i6);
-                        $strat =  sizeof($str_arr) > 1 ? $str_arr[1] : "";
+//                    if (substr($i6, 0, 5) == "strat"){
+//                        $str_arr = explode (":", $i6);
+//                        $strat =  sizeof($str_arr) > 1 ? $str_arr[1] : "";
+//                    }
+                    if ($i6 == "supportive"){
+                        $strat =  "supportive";
                     }
 
                 } elseif (sizeof($message) == 4) {
@@ -200,12 +210,16 @@ class SmsController extends Controller
                         $st = Study::where('study',$study)->first();
                         $stId = is_null($st) ? 0 : $st->id;
 
-                        $stratum = Stratum::where('stratum',$strat)->first();
+                        if ($strat == "supportive")
+                            $stratum = Stratum::where('stratum','like','supportive%')->first();
+                        else
+                            $stratum = Stratum::where('stratum','like','antibiotic%')->first();
+
                         $stratumId = is_null($stratum) ? 1 : $stratum->id;
 
                         $select_ipnos = AllocationList::where('ipno',$ipno)
                             ->where('study_id',$stId)
-                            //->where('stratum_id',$stratumId)
+                            ->where('stratum_id',$stratumId)
                             ->first();
 
                         if (!is_null($select_ipnos)) {
@@ -252,26 +266,65 @@ class SmsController extends Controller
                                 }else{
                                     $next_allocation = $lookup_allocation->allocation;
 
-                                    $participant_id = 'BLA' . mt_rand(100, 999);
+                                    //check is supportive, maintain same participant ID given for antibiotic
+                                    if ($strat == "supportive"){
+                                        $existing_allocation = AllocationList::where('ipno',$ipno)
+                                            ->whereNotNull('date_randomised')
+                                            ->where('study_id',$stId)
+                                            ->where('site_id',$actualSitetId)
+                                            ->first();
 
-                                    $lookup_allocation->participant_id = $participant_id;
-                                    $lookup_allocation->ipno = $ipno;
-                                    $lookup_allocation->user_id = $lookup_users->id;
-                                    $lookup_allocation->date_randomised = Carbon::now();
-                                    $lookup_allocation->update();
+                                        if (is_null($existing_allocation)){
+                                            $reply = "Please randomise the participant to antibiotic arm first before attempting to randomise to supportive care arm";
+                                            Log::info("NOT SUCCESSFUL. ATTEMPTED TO RANDOMIZE TO SUPPORTIVE BEFORE ANTIBIOTIC: ".$reply. "\n");
+
+                                        }else{
+                                            $participant_id = $existing_allocation->participant_id;
+
+                                            $lookup_allocation->participant_id = $participant_id;
+                                            $lookup_allocation->ipno = $ipno;
+                                            $lookup_allocation->user_id = $lookup_users->id;
+                                            $lookup_allocation->date_randomised = Carbon::now();
+                                            $lookup_allocation->update();
 
 
-                                    $reply = "Participant " . $ipno . " has been randomised to " . $next_allocation . " in the " . $study . " study and "
-                                        . Stratum::find($stratumId)->stratum . " stratum. The unique number for the participant is " .
-                                        $participant_id . " . Randomised by " . $lookup_users->first_name.' '.$lookup_users->last_name . " at " . Carbon::now() . "." . "\r\n" . "#" . $next_sequence;
+                                            $reply = "Participant " . $ipno . " has been randomised to " . $next_allocation . " in the " . $study . " study and "
+                                                . Stratum::find($stratumId)->stratum . " stratum. The unique number for the participant is " .
+                                                $participant_id . " . Randomised by " . $lookup_users->first_name.' '.$lookup_users->last_name . " at " . Carbon::now() . "." . "\r\n" . "#" . $next_sequence;
 
-                                    Log::info("SUCCESSFUL RANDOMIZATION: ".$reply. "\n");
+                                            Log::info("SUCCESSFUL RANDOMIZATION: ".$reply. "\n");
+                                        }
+
+                                    }else{
+
+                                        $siteRand = AllocationList::where('site_id',$actualSitetId)
+                                            ->whereNotNull('date_randomised')
+                                            ->count();
+
+                                        $siteRandCount = $siteRand+1;
+
+                                        $participant_id = $actualSite->prefix . str_pad($siteRandCount,3,"0",STR_PAD_LEFT);
+
+                                        $lookup_allocation->participant_id = $participant_id;
+                                        $lookup_allocation->ipno = $ipno;
+                                        $lookup_allocation->user_id = $lookup_users->id;
+                                        $lookup_allocation->date_randomised = Carbon::now();
+                                        $lookup_allocation->update();
+
+
+                                        $reply = "Participant " . $ipno . " has been randomised to " . $next_allocation . " in the " . $study . " study and "
+                                            . Stratum::find($stratumId)->stratum . " stratum. The unique number for the participant is " .
+                                            $participant_id . " . Randomised by " . $lookup_users->first_name.' '.$lookup_users->last_name . " at " . Carbon::now() . "." . "\r\n" . "#" . $next_sequence;
+
+                                        Log::info("SUCCESSFUL RANDOMIZATION: ".$reply. "\n");
+                                    }
                                 }
 
                             }
                         }
 
-                    }else{
+                    }
+                    else{
                         //user DOES NOT have randomising permissions
                         $reply = "You do not have the permissions to randomise participants study at " . strtoupper($site) . ". Contact " . Config::get('prisms.OPERATOR_SUPERUSER') . "for more details";
                         $adm_msg = "The number " . $source . " tried randomising participants at " . strtoupper($site) . ". The user does not have permissions";
@@ -313,7 +366,6 @@ class SmsController extends Controller
                 }
 
             }
-
 
 
             $result_sms = send_sms("SEARCHTrial",$reply,$source,rand());
