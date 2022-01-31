@@ -231,7 +231,7 @@ class SmsController extends Controller
                         } else {
                             //randomising
 
-                            $actualSite = Site::where('site_name',$site)->first();
+                            $actualSite = Site::where('prefix',$site)->first();
                             $actualSitetId = is_null($actualSite) ? 0 : $actualSite->id;
 
 
