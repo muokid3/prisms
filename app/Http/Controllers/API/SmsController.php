@@ -117,7 +117,7 @@ class SmsController extends Controller
                 $inbox->status = 44;
                 $inbox->update();
 
-                $reply = "Incorrect message format; use:" . "\r\n" . "\r\n" . "randomise [ipno] to [studyID] [siteID]" . "\n" . "\n" . "or:" . "\n" . "\n" . "randomise [ipno] to [studyID] [siteID] [phoneNO]" . "\r\n" . "\r\n" . "without the straight brackets. You may also add your phone number at the end of the message if using an authorised phone that does not belong to you.";
+                $reply = "Incorrect message format; use:" . "\r\n" . "\r\n" . "randomise [ipno] to [studyName] [sitePrefix]" . "\n" . "\n" . "or:" . "\n" . "\n" . "randomise [ipno] to [studyName] [sitePrefix] [phoneNO]" . "\r\n" . "\r\n" . "without the straight brackets. You may also add your phone number at the end of the message if using an authorised phone that does not belong to you.";
 
                 Log::info("INCORRECT MESSAGE FORMAT: ".$reply. "\n");
 
@@ -127,7 +127,7 @@ class SmsController extends Controller
                 $inbox->status = 44;
                 $inbox->update();
 
-                $reply = "Incorrect message format; use:" . "\r\n" . "\r\n" . "randomise [ipno] to [studyID] [siteID]" . "\n" . "\n" . "or:" . "\n" . "\n" . "randomise [ipno] to [studyID] [siteID] [phoneNO]" . "\r\n" . "\r\n" . "without the straight brackets. You may also add your phone number at the end of the message if using an authorised phone that does not belong to you.";
+                $reply = "Incorrect message format; use:" . "\r\n" . "\r\n" . "randomise [ipno] to [studyName] [sitePrefix]" . "\n" . "\n" . "or:" . "\n" . "\n" . "randomise [ipno] to [studyName] [sitePrefix] [phoneNO]" . "\r\n" . "\r\n" . "without the straight brackets. You may also add your phone number at the end of the message if using an authorised phone that does not belong to you.";
                 Log::info("INCORRECT MESSAGE FORMAT: ".$reply. "\n");
 
             }
@@ -289,7 +289,7 @@ class SmsController extends Controller
 
 
                                             $reply = "Participant " . $ipno . " has been randomised to " . $next_allocation . " in the " . $study . " study and "
-                                                . Stratum::find($stratumId)->stratum . " stratum. The unique number for the participant is " .
+                                                . Stratum::find($stratumId)->stratum . ". The unique number for the participant is " .
                                                 $participant_id . " . Randomised by " . $lookup_users->first_name.' '.$lookup_users->last_name . " at " . Carbon::now() . "." . "\r\n" . "#" . $next_sequence;
 
                                             Log::info("SUCCESSFUL RANDOMIZATION: ".$reply. "\n");
@@ -313,7 +313,7 @@ class SmsController extends Controller
 
 
                                         $reply = "Participant " . $ipno . " has been randomised to " . $next_allocation . " in the " . $study . " study and "
-                                            . Stratum::find($stratumId)->stratum . " stratum. The unique number for the participant is " .
+                                            . Stratum::find($stratumId)->stratum . ". The unique number for the participant is " .
                                             $participant_id . " . Randomised by " . $lookup_users->first_name.' '.$lookup_users->last_name . " at " . Carbon::now() . "." . "\r\n" . "#" . $next_sequence;
 
                                         Log::info("SUCCESSFUL RANDOMIZATION: ".$reply. "\n");
