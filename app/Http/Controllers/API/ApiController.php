@@ -238,6 +238,7 @@ class ApiController extends Controller
                 "study_name"=>optional($siteStudy->study)->study,
                 "study_detail"=>optional($siteStudy->study)->study_detail,
                 "site_name"=>optional($siteStudy->site)->site_name,
+                "site_prefix"=>optional($siteStudy->site)->prefix,
                 "strata"=>$arr2,
                 ]);
         }
