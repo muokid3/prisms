@@ -201,7 +201,7 @@ class AllocationController extends Controller
                 }
                 fclose($file);
 
-                info(json_encode($importData_arr));
+                info(print_r($importData_arr, true));
                 // Insert to MySQL database
                 $duplicates = 0;
 
