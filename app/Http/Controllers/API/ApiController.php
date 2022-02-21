@@ -550,6 +550,7 @@ class ApiController extends Controller
         $randz = AllocationList::where('user_id', auth()->id())
             ->whereNotNull('date_randomised')
             ->whereNotNull('participant_id')
+            ->distinct('participant_id')
             ->count();
 
         if ($randz > 0){
