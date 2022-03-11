@@ -13,6 +13,7 @@ use App\User;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
@@ -51,6 +52,15 @@ class SmsController extends Controller
         $inbox->saveOrFail();
 
         Log::info("Request successfully stored for the phone number: ".$phone." at ".Carbon::now());
+
+
+        Log::info("Running artisan command");
+
+        Artisan::call('sms:randomise');
+
+        Log::info("Artisan command run complete");
+
+
 
         return response()->json([
             "response_code" => "0",
