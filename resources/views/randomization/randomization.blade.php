@@ -175,9 +175,22 @@
 
                             <div class="row">
                                 <div class="col-md-2">
+                                    <select class="dropdown form-control" data-style="select-with-transition" title="Select Site" tabindex="-98"
+                                            name="site_id" id="site_id" required>
+                                        <option value="{{ isset($selectedSite) ? $selectedSite->id : '' }}">{{ isset($selectedSite) ? $selectedSite->site_name : 'Select Site'}}</option>
+
+
+                                    @foreach( \App\Site::all() as $site)
+                                            <option value="{{ $site->id  }}">{{ $site->site_name }}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
+
+
+                                <div class="col-md-2">
                                     <select class="dropdown form-control" data-style="select-with-transition" title="Select Study" tabindex="-98"
                                             name="study_id" id="study_id" required>
-                                        <option value="">Select Study</option>
+                                        <option value="{{ isset($selectedStudy) ? $selectedStudy->id : '' }}">{{ isset($selectedStudy) ? $selectedStudy->study : 'Select Study'}}</option>
 
                                         @foreach( $studies as $study)
                                             <option value="{{ $study->id  }}">{{ $study->study }}</option>
@@ -189,12 +202,13 @@
                                 <div class="col-md-2">
                                     <select class="dropdown form-control" data-style="select-with-transition" title="Select Stratum" tabindex="-98"
                                             name="stratum_id" id="stratum_id" required>
-                                        <option value="">Select Stratum</option>
+                                        <option value="{{ isset($selectedStratum) ? $selectedStratum->id : '' }}">{{ isset($selectedStratum) ? $selectedStratum->stratum : 'Select Stratum'}}</option>
+
                                     </select>
                                 </div>
 
 
-                                <div class="col-md-3">
+                                <div class="col-md-2">
                                     <div class="row mb-3">
                                         <label class="col-sm-4 col-form-label" for="start_date">Start Date</label>
 
@@ -205,7 +219,7 @@
                                 </div>
 
 
-                                <div class="col-md-3">
+                                <div class="col-md-2">
                                     <div class="row mb-3">
                                         <label class="col-sm-4 col-form-label" for="end_date">End Date</label>
 
