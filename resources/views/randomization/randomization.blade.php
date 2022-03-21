@@ -44,7 +44,7 @@
                     search: "_INPUT_",
                     searchPlaceholder: "Search Logs",
                 },
-                "order": [[0, "desc"]]
+                "order": [[5, "desc"]]
             });
 
             $('#study_id').on('change', function() {

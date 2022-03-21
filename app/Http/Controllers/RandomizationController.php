@@ -243,9 +243,9 @@ class RandomizationController extends Controller
             ->addColumn('stratum',function ($allocation) {
                 return optional($allocation->stratum)->stratum;
             })
-            ->editColumn('date_randomised', function($allocation) {
-                return Carbon::parse($allocation->date_randomised)->isoFormat('MMMM Do YYYY');
-            })
+//            ->editColumn('date_randomised', function($allocation) {
+//                return Carbon::parse($allocation->date_randomised)->isoFormat('MMMM Do YYYY');
+//            })
 //
 //            ->addColumn('actions', function($study) {
 //                $actions = '<div class="pull-right">';
