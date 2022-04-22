@@ -18,7 +18,7 @@ class CreateResponsesTable extends Migration
             $table->foreignId('question_id');
             $table->foreignId('user_id');
 
-            $table->foreignId('answer_id')->nullable();
+            $table->string('answer_id')->nullable();
             $table->text('details')->nullable();
 
 
