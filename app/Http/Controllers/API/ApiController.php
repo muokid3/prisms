@@ -578,6 +578,8 @@ class ApiController extends Controller
             'question_id' => 'required|exists:questions,id',
         ]);
 
+        info($request->all());
+
         $question = Question::find($request->question_id);
         if ($question->type == "OPEN"){
             $resp = new Response();
