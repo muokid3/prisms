@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Answer;
+use App\AuditTrail;
 use App\FollowupQuestion;
 use App\FollowupResponse;
 use App\Question;
@@ -41,9 +42,15 @@ class QuestionnaireController extends Controller
                 $actions = '<div class="pull-right">
                         <button class="btn btn-primary btn-sm add-answer-btn" acs-id="'.$question->id .'" que-id="'.$question->question .'">
                     <i class="fa fa-plus"></i> Add Answer</button>';
-                $actions .= '
-                        <a class="btn btn-success btn-sm add-answer-btn" href="'.url('questions',$question->id) .'">
+
+                $actions .= '<a class="btn btn-success btn-sm" href="'.url('questions',$question->id) .'">
                     <i class="fa fa-info"></i> Details</a>';
+
+                $actions .= '<button source="' . route('edit-question' ,  $question->id) . '"
+                    class="btn btn-warning btn-sm edit-question-btn" acs-id="'.$question->id .'">
+                    <i class="fa fa-edit">edit</i> Edit</button>';
+
+
                 $actions .= '<form action="'. route('delete-question',  $question->id) .'" style="display: inline;" method="post" class="del_question_form">';
                 $actions .= method_field('DELETE');
                 $actions .= csrf_field() .' <button class="btn btn-danger btn-sm">Delete</button></form>';
@@ -82,6 +89,39 @@ class QuestionnaireController extends Controller
             request()->session()->flash('warning', 'Could not delete question because it\'s being used in the system!');
         }
 
+        return redirect()->back();
+    }
+
+    public function edit_question($id)
+    {
+        $question = Question::find($id);
+        return $question;
+    }
+
+    public function update_question(Request $request)
+    {
+
+        $data = request()->validate([
+            'question' => 'required|unique:questions,question,'.$request->id,
+            'type'  => 'required',
+            'answer_count'  => 'required',
+            'id' => 'required|exists:questions,id',
+        ]);
+
+
+
+        $question = Question::find($request->id);
+        $question->question = $request->question;
+        $question->type = $request->type;
+        $question->answer_count = $request->answer_count;
+        $question->update();
+
+        AuditTrail::create([
+            'created_by' => auth()->user()->id,
+            'action' => 'Updated question #'.$request->id.' ('.$request->question.' )',
+        ]);
+
+        request()->session()->flash('success', 'Question has been updated.');
         return redirect()->back();
     }
 

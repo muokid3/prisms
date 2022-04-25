@@ -121,6 +121,10 @@ Route::group(['middleware' => ['auth']], function () {
     //questions
     Route::get('/questions','QuestionnaireController@questions');
     Route::get('/questions/{id}','QuestionnaireController@question_details');
+    Route::get('question/edit/{_id}', 'QuestionnaireController@edit_question')->name('edit-question');
+    Route::put('questions', 'QuestionnaireController@update_question')->name('update-question');
+
+
     Route::post('/questions','QuestionnaireController@add_question');
     Route::get('ajax/questions', 'QuestionnaireController@questionsDT')->name('ajax-questions');
     Route::delete('questions/{question_id}', 'QuestionnaireController@delete_question')->name('delete-question');

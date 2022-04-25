@@ -12,6 +12,7 @@
                     {data: 'id', name: 'id'},
                     {data: 'question', name: 'question'},
                     {data: 'type', name: 'type'},
+                    {data: 'answer_count', name: 'answer_count'},
                     {data: 'answers', name: 'answers'},
                     {data: 'responses', name: 'responses'},
                     {data: 'actions', name: 'actions'}
@@ -33,18 +34,23 @@
                 order: [[0, 'desc']]
             });//end datatable
 
-            var seasonModalTitle = $('#questionnaire-modal-title'),
-                seasonSpoofInput = $('#questionnaire-spoof-input'),
-                seasonForm = $('#questionnaire-form');
+            var _ModalTitle = $('#questionnaire-modal-title'),
+                _SpoofInput = $('#questionnaire-spoof-input'),
+                _Form = $('#question-form');
 
-            // add  season
-            $('#add-questionnaire-btn').on('click', function() {
-                seasonModalTitle.text('Add');
-                seasonSpoofInput.attr('disabled', 'disabled');
-                // productForm.find('input.form-control, select').val('');
-                seasonForm.attr('action', seasonForm.attr('source'));
+            // add
+            $('#add-question-btn').on('click', function() {
+                _ModalTitle.text('Add');
+                _ModalTitle.text('Add');
+                _SpoofInput.val('POST');
+
+                $('#question').val('');
+                $('#answer_count').val('').change();
+                $('#type').val('').change();
+
+                $('#questionnaire-modal').modal('show');
             });
-            // edit   product
+            // add answer
             $(document).on('click', '.add-answer-btn', function() {
                 var seasonBtn = $(this);
                 var question_id = seasonBtn.attr('acs-id');
@@ -58,32 +64,44 @@
 
                     // open the modal
                     $('#answer-modal').modal('show');
+                }
+            });
 
-                    // $.ajax({
-                    //     url: seasonBtn.attr('source'),
-                    //     type: 'get',
-                    //     dataType: 'json',
-                    //     beforeSend: function() {
-                    //         seasonModalTitle.text('Edit');
-                    //         seasonSpoofInput.removeAttr('disabled');
-                    //     },
-                    //     success: function(data) {
-                    //         console.log(data);
-                    //         // populate the modal fields using data from the server
-                    //         $('#name').val(data['name']);
-                    //         $('#introduction').val(data['introduction']);
-                    //         $('#id').val(data['id']);
-                    //
-                    //         // set the update url
-                    //         var action =  seasonForm .attr('action');
-                    //         action = action + '/' + season_id;
-                    //         console.log(action);
-                    //         seasonForm .attr('action', action);
-                    //
-                    //         // open the modal
-                    //         $('#questionnaire-modal').modal('show');
-                    //     }
-                    // });
+            // edit   question
+            $(document).on('click', '.edit-question-btn', function() {
+                var _Btn = $(this);
+                var _id = _Btn.attr('acs-id'),
+                    _Form = $('#question-form');
+
+                if (_id !== '') {
+                    $.ajax({
+                        url: _Btn.attr('source'),
+                        type: 'get',
+                        dataType: 'json',
+                        beforeSend: function() {
+                            _ModalTitle.text('Edit');
+                            _SpoofInput.removeAttr('disabled');
+                            _SpoofInput.val('PUT');
+                        },
+                        success: function(data) {
+                            console.log(data);
+                            // populate the modal fields using data from the server
+
+                            $('#question').val(data['question']);
+                            $('#answer_count').val(data['answer_count']).change();
+                            $('#type').val(data['type']).change();
+                            $('#id').val(data['id']);
+
+                            // set the update url
+                            var action =  _Form .attr('action');
+                            // action = action + '/' + season_id;
+                            console.log(action);
+                            _Form .attr('action', action);
+
+                            // open the modal
+                            $('#questionnaire-modal').modal('show');
+                        }
+                    });
                 }
             });
 
@@ -114,7 +132,7 @@
             <div class="card-body">
 
                 <div class="toolbar">
-                    <button class="btn btn-primary btn-sm" id="add-season-btn" data-toggle="modal" data-target="#questionnaire-modal">
+                    <button class="btn btn-primary btn-sm" id="add-question-btn">
                         <i class="fa fa-plus"></i> Add Question
                     </button>
                 </div>
@@ -134,6 +152,7 @@
                                 <th>#</th>
                                 <th>Question</th>
                                 <th>Type</th>
+                                <th>Answer Count</th>
                                 <th>Answers</th>
                                 <th>Responses</th>
                                 <th class="disabled-sorting text-right">Actions</th>
@@ -144,6 +163,7 @@
                                 <th>#</th>
                                 <th>Question</th>
                                 <th>Type</th>
+                                <th>Answer Count</th>
                                 <th>Answers</th>
                                 <th>Responses</th>
                                 <th class="disabled-sorting text-right">Actions</th>
