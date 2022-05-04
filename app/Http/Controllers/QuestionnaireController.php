@@ -75,6 +75,11 @@ class QuestionnaireController extends Controller
         $question->type = $request->type;
         $question->saveOrFail();
 
+        AuditTrail::create([
+            'created_by' => auth()->user()->id,
+            'action' => 'Added new question ('.$request->question.' - '.$request->type.')',
+        ]);
+
         request()->session()->flash('success', 'Question has been created.');
 
         return redirect()->back();
@@ -82,7 +87,13 @@ class QuestionnaireController extends Controller
     public function delete_question($id)
     {
         try {
+            AuditTrail::create([
+                'created_by' => auth()->user()->id,
+                'action' => 'Deleted question ID ('.$id.' - '.Question::find($id)->question.')',
+            ]);
+
             Question::destroy($id);
+
 
             request()->session()->flash('success', 'Question has been deleted.');
         } catch (QueryException $qe) {
@@ -177,6 +188,11 @@ class QuestionnaireController extends Controller
         $questionAnswer->answer = $request->answer;
         $questionAnswer->saveOrFail();
 
+        AuditTrail::create([
+            'created_by' => auth()->user()->id,
+            'action' => 'Added answer ('.$request->answer.') to question ('.Question::find($request->question_id)->question.')',
+        ]);
+
         request()->session()->flash('success', 'Answer has been created.');
 
         return redirect()->back();
@@ -198,6 +214,11 @@ class QuestionnaireController extends Controller
             $followUp->question = $request->followup;
             $followUp->saveOrFail();
 
+            AuditTrail::create([
+                'created_by' => auth()->user()->id,
+                'action' => 'Added followup question ('.$request->followup.') to answer ('.Answer::find($request->answer_id)->answer.')',
+            ]);
+
             request()->session()->flash('success', 'Follow up question has been created.');
         }else{
             request()->session()->flash('warning', 'A follow up question for this answer already exists');
@@ -213,6 +234,11 @@ class QuestionnaireController extends Controller
                 FollowupResponse::where('followup_question_id',$flUpQ->id)->delete();
                 $flUpQ->delete();
             }
+
+            AuditTrail::create([
+                'created_by' => auth()->user()->id,
+                'action' => 'Deleted answer ('.Answer::find($id)->answer.') to question ('.optional(Answer::find($id)->question)->question.')',
+            ]);
 
             Answer::destroy($id);
 

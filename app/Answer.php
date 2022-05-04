@@ -10,6 +10,10 @@ class Answer extends Model
         return $this->hasOne(FollowupQuestion::class);
     }
 
+    public function question() {
+        return $this->belongsTo(Question::class,'question_id');
+    }
+
     public function toArray() {
         $data = parent::toArray();
         $data['followup'] = $this->followup;
