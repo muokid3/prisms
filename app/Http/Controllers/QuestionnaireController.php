@@ -7,6 +7,7 @@ use App\AuditTrail;
 use App\FollowupQuestion;
 use App\FollowupResponse;
 use App\Question;
+use App\Response;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
@@ -143,8 +144,11 @@ class QuestionnaireController extends Controller
         if (is_null($question))
             abort(404);
 
+        $responses = Response::where('question_id',$id)->get();
+
         return view('questionnaires.question_details')->with([
             'question' => $question,
+            'responses' => $responses,
         ]);
     }
     public function answersDT($questionId) {

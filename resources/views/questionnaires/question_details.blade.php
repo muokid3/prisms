@@ -145,6 +145,12 @@
                                     </a>
                                 </li>
 
+                                <li class="nav-item">
+                                    <a class="nav-link" data-toggle="tab" tab-id="responses" href="#responses" role="tablist">
+                                        <i class="fa fa-inbox"></i> Responses
+                                    </a>
+                                </li>
+
                             </ul>
 
 
@@ -209,6 +215,56 @@
                                                         <th>Answer</th>
                                                         <th>Follow up question</th>
                                                         <th>Action</th>
+
+                                                    </tr>
+                                                    </tfoot>
+                                                </table>
+                                                <!-- end content-->
+                                            </div>
+                                            <!--  end card  -->
+                                        </div>
+                                    </div>
+                                </div>
+
+
+                                <div class="tab-pane" id="responses">
+                                    <div class="card text-left">
+                                        <div class="card-header">
+                                            <h4 class="card-title">Responses</h4>
+                                            <p class="card-category">
+                                                Received responses
+                                            </p>
+                                        </div>
+                                        <div class="card-body">
+                                            <div class="loader" style="display: none;">Loading...</div>
+                                            <div class="material-datatables">
+                                                <table id="responses-dt"
+                                                       class="table table-striped table-no-bordered table-hover" cellspacing="0" width="100%" style="width:100%">
+                                                    <thead>
+                                                    <tr>
+                                                        <th>#</th>
+                                                        <th>Respondent</th>
+                                                        <th>Response</th>
+                                                        <th>Details</th>
+
+                                                    </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                    @foreach($responses as $response)
+                                                        <tr>
+                                                            <td>{{$response->id}}</td>
+                                                            <td>{{optional($response->respondent)->first_name.' '.optional($response->respondent)->last_name}}</td>
+                                                            <td>{{optional($response->answer)->answer}}</td>
+                                                            <td>{{$response->details}}</td>
+                                                        </tr>
+                                                    @endforeach
+                                                    </tbody>
+                                                    <tfoot>
+                                                    <tr>
+                                                        <th>#</th>
+                                                        <th>Respondent</th>
+                                                        <th>Response</th>
+                                                        <th>Retails</th>
 
                                                     </tr>
                                                     </tfoot>
