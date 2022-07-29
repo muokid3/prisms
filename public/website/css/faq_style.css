@@ -1,0 +1,33 @@
+{
+    margin: 0;
+    padding: 0;
+    font: normal 1em/150% Sans-Serif;
+}
+
+input,
+.content {display: none;}
+
+label,
+input:checked + .content {display: block;}
+
+label {
+    cursor: pointer;
+    background: -webkit-linear-gradient(#FFA07A,#FFA07A);
+    color: #fff;
+    padding: 5px 25px;
+    border: 1px solid #ccc;
+    margin-top: -1px;
+}
+
+label:hover {background: -webkit-linear-gradient(#FFA07A,#FFA07A);}
+
+.content {
+    padding: 25px;
+    text-indent: 25px;  
+    text-align: justify;
+    border: 1px solid #ccc;
+    border-top: none;
+}
+
+p + p {margin:20px 0 0;}
+

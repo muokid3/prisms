@@ -34,6 +34,11 @@ class HomeController extends Controller
      */
     public function index()
     {
+        return view('home');
+    }
+
+    public function dashboard()
+    {
         $userGroup = auth()->user()->user_group;
 
         switch ($userGroup) {

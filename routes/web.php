@@ -15,8 +15,11 @@ use Illuminate\Support\Facades\Route;
 Auth::routes();
 Route::get('/logout', 'Auth\LoginController@logout');
 
+Route::get('/','HomeController@index');
+
+
 Route::group(['middleware' => ['auth']], function () {
-    Route::get('/','HomeController@index');
+    Route::get('/dashboard','HomeController@dashboard');
 
 
 
