@@ -51,6 +51,10 @@
                     <li class="nav-item">
                         <a class="nav-link page-scroll" href="#map-area">Contact</a>
                     </li>
+
+                    <li class="nav-item">
+                        <a class="nav-link page-scroll" href="{{url('login')}}">Dashboard Login</a>
+                    </li>
                 </ul>
             </div>
         </div>
