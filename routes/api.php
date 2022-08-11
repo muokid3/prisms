@@ -36,6 +36,8 @@ Route::group([
     Route::get('reminders/redcap_day5', 'RemindersController@redcap_day5');
     Route::get('reminders/redcap_day4', 'RemindersController@redcap_day4');
 
+    Route::get('reminders/redcap_day90', 'RemindersController@redcap_day90');
+
 
 
 
