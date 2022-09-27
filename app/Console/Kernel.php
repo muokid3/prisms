@@ -29,6 +29,7 @@ class Kernel extends ConsoleKernel
          $schedule->command('reminder:day5')->dailyAt('08:00');
          $schedule->command('reminder:day29')->dailyAt('08:00');
          $schedule->command('reminder:day30')->dailyAt('08:00');
+         $schedule->command('reminder:day90')->dailyAt('08:00');
          $schedule->command('sms:randomise')->everyMinute();
     }
 
