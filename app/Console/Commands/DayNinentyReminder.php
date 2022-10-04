@@ -89,48 +89,48 @@ class DayNinentyReminder extends Command
 
             info($record);
 
-            $scheduledDate = Carbon::parse($date_adm)->addDays(90)->isoFormat('MMM Do YYYY');
+            if (Carbon::parse($date_adm)->addDays(90)->isCurrentDay()){
+                $scheduledDate = Carbon::parse($date_adm)->addDays(90)->isoFormat('MMM Do YYYY');
 
-            $site = RedcapSite::where('redcap_hospital_id',$hosp_id)->first();
-            $siteName = is_null($site) ? "NULL" : $site->redcap_hospital_name;
-            $id = is_null($site) ? 0 : $site->id;
+                $site = RedcapSite::where('redcap_hospital_id',$hosp_id)->first();
+                $siteName = is_null($site) ? "NULL" : $site->redcap_hospital_name;
+                $id = is_null($site) ? 0 : $site->id;
 
 
 
-            $siteContacts = SiteContact::where('redcap_site_id', $id)->get();
-            foreach ($siteContacts as $siteContact){
+                $siteContacts = SiteContact::where('redcap_site_id', $id)->get();
+                foreach ($siteContacts as $siteContact){
 
-                if ($siteContact->user_group == 4){
-                    //clerk
-                    $message = "Hi ".$siteContact->contact_first_name.", This is a reminder to do a day-90 review entry".
-                        " for the patient with the study ID: ".$study_id." scheduled for today ".
-                        $scheduledDate.
-                        "\r\n".
-                        ".Good day.";
-                }else{
-                    $message = "Hi ".$siteContact->contact_first_name.", This is a reminder to do a day-90 review".
-                        " for the patient with the study ID: ".$study_id." scheduled for today ".
-                        $scheduledDate.
-                        "\r\n".
-                        ".Good day.";
+                    if ($siteContact->user_group == 4){
+                        //clerk
+                        $message = "Hi ".$siteContact->contact_first_name.", This is a reminder to do a day-90 review entry".
+                            " for the patient with the study ID: ".$study_id." scheduled for today ".
+                            $scheduledDate.
+                            "\r\n".
+                            ".Good day.";
+                    }else{
+                        $message = "Hi ".$siteContact->contact_first_name.", This is a reminder to do a day-90 review".
+                            " for the patient with the study ID: ".$study_id." scheduled for today ".
+                            $scheduledDate.
+                            "\r\n".
+                            ".Good day.";
+                    }
+
+
+
+                    $result_sms = send_sms("SEARCHTrial",$message,$siteContact->contact_phone_no,rand());
+
+                    $sent = new Sent();
+                    $sent->timestamp = Carbon::now();
+                    $sent->destination = $siteContact->contact_phone_no;
+                    $sent->text = $message;
+                    $sent->status = $result_sms["message"];
+                    $sent->unique_id = array_key_exists('data', $result_sms) ? $result_sms["data"]["uniqueId"] : null;
+                    $sent->saveOrFail();
+
                 }
 
-
-
-                $result_sms = send_sms("SEARCHTrial",$message,$siteContact->contact_phone_no,rand());
-
-                $sent = new Sent();
-                $sent->timestamp = Carbon::now();
-                $sent->destination = $siteContact->contact_phone_no;
-                $sent->text = $message;
-                $sent->status = $result_sms["message"];
-                $sent->unique_id = array_key_exists('data', $result_sms) ? $result_sms["data"]["uniqueId"] : null;
-                $sent->saveOrFail();
-
             }
-
-
-
         }
     }
 }
