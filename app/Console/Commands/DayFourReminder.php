@@ -47,7 +47,7 @@ class DayFourReminder extends Command
         $apiUrl = 'https://searchtrial.kemri-wellcome.org/api/';
 
         //$apiToken = '8E77FB323E730636E6204C516ECC74B3'; //dkimego
-        $apiToken = 'FE1D8D5FC99D535DA5EA73370CF95050'; //hsutoken
+        $apiToken = '4CF1C475E6A78AED79DE826D2FB4E403'; //hsutoken
 
         $project = new RedCapProject($apiUrl, $apiToken);
         //$projectInfo = $project->exportProjectInfo();
