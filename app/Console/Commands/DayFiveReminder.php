@@ -105,13 +105,13 @@ class DayFiveReminder extends Command
 
                     $result_sms = send_sms("SEARCHTrial",$message,$siteContact->contact_phone_no,rand());
 
-                    $sent = new Sent();
-                    $sent->timestamp = Carbon::now();
-                    $sent->destination = $siteContact->contact_phone_no;
-                    $sent->text = $message;
-                    $sent->status = $result_sms["message"];
-                    $sent->unique_id = array_key_exists('data', $result_sms) ? $result_sms["data"]["uniqueId"] : null;
-                    $sent->saveOrFail();
+//                    $sent = new Sent();
+//                    $sent->timestamp = Carbon::now();
+//                    $sent->destination = $siteContact->contact_phone_no;
+//                    $sent->text = $message;
+//                    $sent->status = $result_sms["message"];
+//                    $sent->unique_id = array_key_exists('data', $result_sms) ? $result_sms["data"]["uniqueId"] : null;
+//                    $sent->saveOrFail();
 
                 }
             }
